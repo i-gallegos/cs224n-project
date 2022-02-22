@@ -13,19 +13,6 @@ from access.simplifiers import get_fairseq_simplifier, get_preprocessed_simplifi
 """
 TODO: Change evaluation methods where needed.
 SARI and FKGL evaluation for simplification.
-
-HOW TO USE ROUGE (for datasets)
-install library through pip: pip install rouge
-
-[in the code, do following]
-from rouge import Rouge
-model_output = ["string", "s1", etc]
-reference = ["string", "s1", etc]
-rouge = Rouge()
-rouge.get_scores(model_output, reference, avg=True)
-
-[The get_scores method returns three metrics, ROUGE-N using a unigram (ROUGE-1) and a bigram (ROUGE-2) — and ROUGE-L.
-For each of these, we receive the F1 score f, precision p, and recall r.]
 """
 
 

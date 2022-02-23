@@ -3,6 +3,7 @@ from summa.summarizer import summarize
 from sumy.summarizers.kl import KLSummarizer
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 AVG_SUMMARY_LEN = 10 #TODO: Should be average number of words among all summaries
 
@@ -105,6 +106,15 @@ def random_k(text):
             break
 
     return ('. ').join(summary)
+
+
+def bart_no_finetuning(text):
+    model_name = "facebook/bart-large-cnn"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSequenceClassification.from_pretrained(model_name)
+
+    tokenized_input = tokenizer(text, return_tensors="pt")
+    outputs = model(**tokenized_input)
 
 
 def main():

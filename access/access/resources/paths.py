@@ -53,7 +53,7 @@ def read_csv(csv_file):
 # be in 1st ACCESS folder
 def get_law_filepath(dataset, phase):
     repo_dir = get_git_root(os.getcwd())
-    dataset_path = repo_dir / f'DATA_{dataset}'
+    dataset_path = f'{repo_dir} / DATA_{dataset}'
     filename = f'{dataset}_{phase}.csv'
     return read_csv(filename)
     

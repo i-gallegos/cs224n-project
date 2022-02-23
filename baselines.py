@@ -6,6 +6,7 @@ from sumy.summarizers.kl import KLSummarizer
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from transformers import pipeline
+import evalRouge
 
 def adjust_summary_len(summary, avg_summary_len):
     '''For the sentence which causes the summary to exceed the budget, we keep
@@ -34,7 +35,10 @@ def text_rank(text, avg_summary_len):
     summary = summarize(text, words=avg_summary_len, ratio=1)
     if len(summary.split()) > avg_summary_len:
         summary = adjust_summary_len(summary, avg_summary_len)
-    return summary
+    if len(summary) == 0:
+        summary += 'none'
+    return summary.replace('\n', ' ')
+
 
 def kl_sum(text, avg_summary_len):
     '''Greedily selects the sentences that minimize the Kullback-Lieber (KL) divergence
@@ -128,7 +132,7 @@ def baseline_summaries(dataset, type, filepath, summarizer):
     fout_lead_one = os.path.join(out_dir, 'lead_one.txt')
     fout_lead_k = os.path.join(out_dir, 'lead_k.txt')
     fout_random_k = os.path.join(out_dir, 'random_k.txt')
-    fout_bart = os.path.join(out_dir, 'bart.txt')
+    # fout_bart = os.path.join(out_dir, 'bart.txt')
     fout_ref = os.path.join(out_dir, 'ref.txt')
 
     fo_text_rank = open(fout_text_rank, 'w')
@@ -136,7 +140,7 @@ def baseline_summaries(dataset, type, filepath, summarizer):
     fo_lead_one = open(fout_lead_one, 'w')
     fo_lead_k = open(fout_lead_k, 'w')
     fo_random_k = open(fout_random_k, 'w')
-    fo_bart = open(fout_bart, 'w')
+    # fo_bart = open(fout_bart, 'w')
     fo_ref = open(fout_ref, 'w')
 
     for index, row in df.iterrows():
@@ -149,7 +153,7 @@ def baseline_summaries(dataset, type, filepath, summarizer):
         fo_lead_one.write(lead_one(original_text).strip() + '\n')
         fo_lead_k.write(lead_k(original_text, avg_summary_len).strip() + '\n')
         fo_random_k.write(random_k(original_text, avg_summary_len).strip() + '\n')
-        fo_bart.write(bart_no_finetuning(original_text, summarizer, avg_summary_len).strip() + '\n')
+        # fo_bart.write(bart_no_finetuning(original_text, summarizer, avg_summary_len).strip() + '\n')
         fo_ref.write(reference_summary.strip() + '\n')
 
     fo_text_rank.close()
@@ -157,12 +161,13 @@ def baseline_summaries(dataset, type, filepath, summarizer):
     fo_lead_one.close()
     fo_lead_k.close()
     fo_random_k.close()
-    fo_bart.close()
+    # fo_bart.close()
     fo_ref.close()
 
 
 def run_baselines():
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0)
+    # summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0)
+    summarizer = None
 
     for dataset in ['tldr', 'tosdr']:
         dir =  os.path.join('data', dataset)
@@ -172,8 +177,30 @@ def run_baselines():
             baseline_summaries(dataset, type, filepath, summarizer)
 
 
+def compute_metrics():
+    df = pd.DataFrame(columns=['dataset', 'split', 'baseline', 'R-1', 'R-2', 'R-L'])
+    for dataset in ['tldr', 'tosdr']:
+        dir =  os.path.join('results', 'baselines', dataset)
+        for split in ['train', 'dev', 'test']:
+            for baseline in ['bart', 'kl_sum', 'lead_k', 'lead_one', 'random_k', 'text_rank']:
+                print(f'Computing metrics for {dataset}, {split}, {baseline}')
+                preds = os.path.join(dir, split, baseline+'.txt')
+                true = os.path.join(dir, split, 'ref.txt')
+
+                rouge = evalRouge.eval(preds, true)
+                df = pd.concat((df, pd.DataFrame.from_dict({'dataset':dataset,
+                                                            'split':split,
+                                                            'baseline':baseline,
+                                                            'R-1':[rouge['rouge-1']['f']],
+                                                            'R-2':[rouge['rouge-2']['f']],
+                                                            'R-L':[rouge['rouge-l']['f']]})), ignore_index=True)
+
+    df.to_csv(os.path.join('results', 'baselines', 'baseline_rouge.csv'), index=False)
+
+
 def main():
-    run_baselines()
+    # run_baselines()
+    compute_metrics()
 
 
 if __name__ == "__main__":

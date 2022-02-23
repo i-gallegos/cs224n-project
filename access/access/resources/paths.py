@@ -7,7 +7,6 @@
 import os
 from itertools import product
 from pathlib import Path
-import git
 import pandas as pd
 
 REPO_DIR = Path(__file__).resolve().parent.parent.parent
@@ -23,11 +22,6 @@ BEST_MODEL_DIR = MODELS_DIR / 'best_model'
 
 LANGUAGES = ['complex', 'simple']
 PHASES = ['train', 'valid', 'test']
-
-def get_git_root(path):
-        git_repo = git.Repo(path, search_parent_directories=True)
-        git_root = git_repo.git.rev_parse("--show-toplevel")
-        return git_root
 
 def get_dataset_dir(dataset):
     return DATASETS_DIR / dataset
@@ -50,10 +44,10 @@ def read_csv(csv_file):
     df = pd.read_csv(csv_file, usecols=col_list)
     return (df['original_text'], df['reference_summary'])
 
-
+# be in cs224n-project/access
 def get_law_filepath(dataset, phase):
-    repo_dir = get_git_root(os.getcwd())
-    dataset_path = f'{repo_dir} / data / {dataset}'
+    cur_path = os.getcwd() 
+    dataset_path = f'{cur_path}/../data/{dataset}'
     filename = f'{dataset_path}/{dataset}_{phase}.csv'
     return read_csv(filename)
     

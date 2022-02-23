@@ -1,40 +1,40 @@
 import random
+import os
+import pandas as pd
 from summa.summarizer import summarize
 from sumy.summarizers.kl import KLSummarizer
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from transformers import pipeline
 
-AVG_SUMMARY_LEN = 20 #TODO: Should be average number of words among all summaries
-
-def adjust_summary_len(summary):
+def adjust_summary_len(summary, avg_summary_len):
     '''For the sentence which causes the summary to exceed the budget, we keep
     or discard the full sentence depending on which resulting summary is closer
     to the budgeted length.
     '''
     tokenized = summary.split('. ')
     total_len = len(summary.split())
-    while len(tokenized) > 1 and total_len > AVG_SUMMARY_LEN:
-        if abs(AVG_SUMMARY_LEN - total_len) > abs(AVG_SUMMARY_LEN - (total_len - len(tokenized[-1].split()))):
+    while len(tokenized) > 1 and total_len > avg_summary_len:
+        if abs(avg_summary_len - total_len) > abs(avg_summary_len - (total_len - len(tokenized[-1].split()))):
             total_len -= len(tokenized[-1].split())
             tokenized.pop()
 
     return (' ').join([str(sentence) for sentence in tokenized])
 
 
-def text_rank(text):
+def text_rank(text, avg_summary_len):
     '''Harnesses the PageRank algorithm to choose the sentences with the
     highest similarity scores to the original document.
 
     Source: https://github.com/summanlp/textrank
     '''
     summary = summarize(text)
-    if len(summary.split()) > AVG_SUMMARY_LEN:
-        summary = adjust_summary_len(summary)
+    if len(summary.split()) > avg_summary_len:
+        summary = adjust_summary_len(summary, avg_summary_len)
     return summary
 
 
-def kl_sum(text):
+def kl_sum(text, avg_summary_len):
     '''Greedily selects the sentences that minimize the Kullback-Lieber (KL) divergence
     between the original text and proposed summary.
 
@@ -49,7 +49,7 @@ def kl_sum(text):
         prev_len = len((' ').join([str(sentence) for sentence in summary]).split())
         new_summary = summarizer(parser.document, i)
         new_len = len((' ').join([str(sentence) for sentence in new_summary]).split())
-        if abs(AVG_SUMMARY_LEN - new_len) >= abs(AVG_SUMMARY_LEN - new_len):
+        if abs(avg_summary_len - new_len) >= abs(avg_summary_len - new_len):
             break
         else:
             summary = new_summary
@@ -63,7 +63,7 @@ def lead_one(text):
     return text.split('. ')[0]
 
 
-def lead_k(text):
+def lead_k(text, avg_summary_len):
     '''
     Selects the first k sentences until a word limit is satisfied.
     '''
@@ -74,7 +74,7 @@ def lead_k(text):
 
     for i in range(1, len(tokenized)):
         len_i = len(tokenized[i].split())
-        if abs(AVG_SUMMARY_LEN - total_len) > abs(AVG_SUMMARY_LEN - (total_len+len_i)):
+        if abs(avg_summary_len - total_len) > abs(avg_summary_len - (total_len+len_i)):
             summary.append(tokenized[i])
             total_len += len_i
         else:
@@ -83,7 +83,7 @@ def lead_k(text):
     return ('. ').join(summary)
 
 
-def random_k(text):
+def random_k(text, avg_summary_len):
     '''Selects a random sentence until a word limit is satisfied. For this baseline,
     the reported numbers are an average of 10 runs on the entire dataset.
     '''
@@ -99,7 +99,7 @@ def random_k(text):
     while random_shuffle:
         i = random_shuffle.pop()
         len_i = len(tokenized[i].split())
-        if abs(AVG_SUMMARY_LEN - total_len) > abs(AVG_SUMMARY_LEN - (total_len+len_i)):
+        if abs(avg_summary_len - total_len) > abs(avg_summary_len - (total_len+len_i)):
             summary.append(tokenized[i])
             total_len += len_i
         else:
@@ -108,22 +108,67 @@ def random_k(text):
     return ('. ').join(summary)
 
 
-def bart_no_finetuning(text, summarizer):
-    return summarizer(text, max_length=AVG_SUMMARY_LEN+10, min_length=10, do_sample=False)[0]['summary_text']
+def bart_no_finetuning(text, summarizer, avg_summary_len):
+    return summarizer(text, max_length=avg_summary_len+10, min_length=10, do_sample=False)[0]['summary_text']
+
+
+def baseline_summaries(dataset, type, filepath, summarizer):
+    df = pd.read_csv(filepath)
+
+    # avg_summary_len should be average number of words among all summaries
+    avg_summary_len = int(df['reference_summary'].str.len().mean())
+
+    out_dir = os.path.join('results', 'baselines', dataset, type)
+    os.makedirs(out_dir, exist_ok=True)
+
+    fout_text_rank = os.path.join(out_dir, 'text_rank.txt')
+    fout_kl_sum = os.path.join(out_dir, 'kl_sum.txt')
+    fout_lead_one = os.path.join(out_dir, 'lead_one.txt')
+    fout_lead_k = os.path.join(out_dir, 'lead_k.txt')
+    fout_random_k = os.path.join(out_dir, 'random_k.txt')
+    fout_ref = os.path.join(out_dir, 'ref.txt')
+
+    fo_text_rank = open(fout_text_rank, 'w')
+    fo_kl_sum = open(fout_kl_sum, 'w')
+    fo_lead_one = open(fout_lead_one, 'w')
+    fo_lead_k = open(fout_lead_k, 'w')
+    fo_random_k = open(fout_random_k, 'w')
+    fo_ref = open(fout_ref, 'w')
+
+
+    for index, row in df.iterrows():
+        original_text = row['original_text']
+        reference_summary = row['reference_summary']
+        print(original_text)
+
+        fo_text_rank.write(text_rank(original_text, avg_summary_len).strip() + '\n')
+        fo_kl_sum.write(kl_sum(original_text, avg_summary_len).strip() + '\n')
+        fo_lead_one.write(lead_one(original_text).strip() + '\n')
+        fo_lead_k.write(lead_k(original_text, avg_summary_len).strip() + '\n')
+        fo_random_k.write(random_k(original_text, avg_summary_len).strip() + '\n')
+        fo_ref.write(reference_summary.strip() + '\n')
+
+        break
+
+    fo_text_rank.close()
+    fo_kl_sum.close()
+    fo_lead_one.close()
+    fo_lead_k.close()
+    fo_random_k.close()
+    fo_ref.close()
+
+
 
 def main():
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+    # summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+    summarizer = None
 
-    original_text = "welcome to the pok\u00e9mon go video game services which are accessible via the niantic inc niantic mobile device application the app. to make these pok\u00e9mon go terms of service the terms easier to read our video game services the app and our websites located at http pokemongo nianticlabs com and http www pokemongolive com the site are collectively called the services. please read carefully these terms our trainer guidelines and our privacy policy because they govern your use of our services."
-    reference_summary = "hi."
-
-    test = """Automatic summarization is the process of reducing a text document with a \
-    computer program in order to create a summary that retains the most important points \
-    of the original document. As the problem of information overload has grown, and as \
-    the quantity of data has increased, so has interest in automatic summarization. \
-    Technologies that can make a coherent summary take into account variables such as \
-    length, writing style and syntax. An example of the use of summarization technology \
-    is search engines such as Google. Document summarization is another."""
+    for dataset in ['tldr', 'tosdr']:
+        dir =  os.path.join('data', dataset)
+        for type in ['train', 'dev', 'test']:
+            filepath = os.path.join(dir, dataset+'_'+type+'.csv')
+            baseline_summaries(dataset, type, filepath, summarizer)
+            return
 
     # print("TEXT RANK")
     # print(text_rank(test))
@@ -135,8 +180,8 @@ def main():
     # print(lead_k(original_text))
     # print("RANDOM K")
     # print(random_k(original_text))
-    print("BART")
-    print(bart_no_finetuning(original_text, summarizer))
+    # print("BART")
+    # print(bart_no_finetuning(original_text, summarizer))
 
     #TODO: ROUGE scores
 

@@ -51,13 +51,13 @@ def read_csv(csv_file):
         writer.writerow(row)
     orig_file.close()
 
-    ref_file = open('original_file.txt', 'w')
+    ref_file = open('reference_file.txt', 'w')
     writer = csv.writer(ref_file)
     for row in df['reference_summary']:
         writer.writerow(row)
     ref_file.close()
 
-    return orig_file, ref_file
+    return 'original_file.txt', 'reference_file.txt'
 
 # be in cs224n-project/access
 def get_law_filepath(dataset, phase):

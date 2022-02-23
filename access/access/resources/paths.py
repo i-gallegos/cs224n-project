@@ -8,6 +8,7 @@ import os
 from itertools import product
 from pathlib import Path
 import pandas as pd
+import csv
 
 REPO_DIR = Path(__file__).resolve().parent.parent.parent
 EXP_DIR = REPO_DIR / 'experiments'
@@ -42,7 +43,21 @@ def get_filepaths_dict(dataset):
 def read_csv(csv_file):
     col_list = ['original_text', 'reference_summary']
     df = pd.read_csv(csv_file, usecols=col_list)
-    return (df['original_text'], df['reference_summary'])
+
+    # create files with data from csv
+    orig_file = open('original_file.txt', 'w')
+    writer = csv.writer(orig_file)
+    for row in df['original_text']:
+        writer.writerow(row)
+    orig_file.close()
+
+    ref_file = open('original_file.txt', 'w')
+    writer = csv.writer(ref_file)
+    for row in df['reference_summary']:
+        writer.writerow(row)
+    ref_file.close()
+
+    return orig_file, ref_file
 
 # be in cs224n-project/access
 def get_law_filepath(dataset, phase):

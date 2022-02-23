@@ -166,7 +166,7 @@ def baseline_summaries(dataset, type, filepath, summarizer):
 
 
 def run_baselines():
-    # summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0)
+    # summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0) # for GPU
     summarizer = None
 
     for dataset in ['tldr', 'tosdr']:
@@ -196,7 +196,6 @@ def compute_metrics():
                                                             'R-L':[rouge['rouge-l']['f']]})), ignore_index=True)
 
     df.to_csv(os.path.join('results', 'baselines', 'baseline_rouge.csv'), index=False)
-
 
 def main():
     # run_baselines()

@@ -23,6 +23,7 @@ def eval(model_file, ref_file):
     model_txt = model_txt.split('\n')
     ref_txt = ref_txt.split('\n')
 
+    # Remove empty line at end of file
     if model_txt[-1] == '':
         model_txt.pop()
         ref_txt.pop()

@@ -3,9 +3,9 @@ from summa.summarizer import summarize
 from sumy.summarizers.kl import KLSummarizer
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import pipeline
 
-AVG_SUMMARY_LEN = 10 #TODO: Should be average number of words among all summaries
+AVG_SUMMARY_LEN = 20 #TODO: Should be average number of words among all summaries
 
 def adjust_summary_len(summary):
     '''For the sentence which causes the summary to exceed the budget, we keep
@@ -108,16 +108,12 @@ def random_k(text):
     return ('. ').join(summary)
 
 
-def bart_no_finetuning(text):
-    model_name = "facebook/bart-large-cnn"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSequenceClassification.from_pretrained(model_name)
-
-    tokenized_input = tokenizer(text, return_tensors="pt")
-    outputs = model(**tokenized_input)
-
+def bart_no_finetuning(text, summarizer):
+    return summarizer(text, max_length=AVG_SUMMARY_LEN+10, min_length=10, do_sample=False)[0]['summary_text']
 
 def main():
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+
     original_text = "welcome to the pok\u00e9mon go video game services which are accessible via the niantic inc niantic mobile device application the app. to make these pok\u00e9mon go terms of service the terms easier to read our video game services the app and our websites located at http pokemongo nianticlabs com and http www pokemongolive com the site are collectively called the services. please read carefully these terms our trainer guidelines and our privacy policy because they govern your use of our services."
     reference_summary = "hi."
 
@@ -129,16 +125,18 @@ def main():
     length, writing style and syntax. An example of the use of summarization technology \
     is search engines such as Google. Document summarization is another."""
 
-    print("TEXT RANK")
-    print(text_rank(test))
-    print("KL SUM")
-    print(kl_sum(test))
-    print("LEAD ONE")
-    print(lead_one(original_text))
-    print("LEAD K")
-    print(lead_k(original_text))
-    print("RANDOM K")
-    print(random_k(original_text))
+    # print("TEXT RANK")
+    # print(text_rank(test))
+    # print("KL SUM")
+    # print(kl_sum(test))
+    # print("LEAD ONE")
+    # print(lead_one(original_text))
+    # print("LEAD K")
+    # print(lead_k(original_text))
+    # print("RANDOM K")
+    # print(random_k(original_text))
+    print("BART")
+    print(bart_no_finetuning(original_text, summarizer))
 
     #TODO: ROUGE scores
 

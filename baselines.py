@@ -12,12 +12,15 @@ def adjust_summary_len(summary, avg_summary_len):
     or discard the full sentence depending on which resulting summary is closer
     to the budgeted length.
     '''
-    tokenized = summary.split('. ')
+    tokenized = summary.split('.')
     total_len = len(summary.split())
     while len(tokenized) > 1 and total_len > avg_summary_len:
         if abs(avg_summary_len - total_len) > abs(avg_summary_len - (total_len - len(tokenized[-1].split()))):
             total_len -= len(tokenized[-1].split())
             tokenized.pop()
+            print(total_len, tokenized)
+        else:
+            break
 
     return (' ').join([str(sentence) for sentence in tokenized])
 
@@ -28,11 +31,10 @@ def text_rank(text, avg_summary_len):
 
     Source: https://github.com/summanlp/textrank
     '''
-    summary = summarize(text)
+    summary = summarize(text, words=avg_summary_len, ratio=1)
     if len(summary.split()) > avg_summary_len:
         summary = adjust_summary_len(summary, avg_summary_len)
     return summary
-
 
 def kl_sum(text, avg_summary_len):
     '''Greedily selects the sentences that minimize the Kullback-Lieber (KL) divergence
@@ -45,7 +47,7 @@ def kl_sum(text, avg_summary_len):
     summarizer = KLSummarizer()
 
     summary = summarizer(parser.document, 1)
-    for i in range(2, len(text.split('. '))):
+    for i in range(2, len(text.split('.'))):
         prev_len = len((' ').join([str(sentence) for sentence in summary]).split())
         new_summary = summarizer(parser.document, i)
         new_len = len((' ').join([str(sentence) for sentence in new_summary]).split())
@@ -60,14 +62,14 @@ def kl_sum(text, avg_summary_len):
 def lead_one(text):
     '''Select the first sentence of the original text as the summary.
     '''
-    return text.split('. ')[0]
+    return text.split('.')[0]
 
 
 def lead_k(text, avg_summary_len):
     '''
     Selects the first k sentences until a word limit is satisfied.
     '''
-    tokenized = text.split('. ')
+    tokenized = text.split('.')
 
     summary = [tokenized[0]]
     total_len = len(tokenized[0].split())
@@ -87,7 +89,7 @@ def random_k(text, avg_summary_len):
     '''Selects a random sentence until a word limit is satisfied. For this baseline,
     the reported numbers are an average of 10 runs on the entire dataset.
     '''
-    tokenized = text.split('. ')
+    tokenized = text.split('.')
 
     random_shuffle = list(range(len(tokenized)))
     random.shuffle(random_shuffle)
@@ -126,6 +128,7 @@ def baseline_summaries(dataset, type, filepath, summarizer):
     fout_lead_one = os.path.join(out_dir, 'lead_one.txt')
     fout_lead_k = os.path.join(out_dir, 'lead_k.txt')
     fout_random_k = os.path.join(out_dir, 'random_k.txt')
+    fout_bart = os.path.join(out_dir, 'bart.txt')
     fout_ref = os.path.join(out_dir, 'ref.txt')
 
     fo_text_rank = open(fout_text_rank, 'w')
@@ -133,57 +136,44 @@ def baseline_summaries(dataset, type, filepath, summarizer):
     fo_lead_one = open(fout_lead_one, 'w')
     fo_lead_k = open(fout_lead_k, 'w')
     fo_random_k = open(fout_random_k, 'w')
+    fo_bart = open(fout_bart, 'w')
     fo_ref = open(fout_ref, 'w')
 
-
     for index, row in df.iterrows():
+        print(f'  {index} of {len(df)}')
         original_text = row['original_text']
         reference_summary = row['reference_summary']
-        print(original_text)
 
         fo_text_rank.write(text_rank(original_text, avg_summary_len).strip() + '\n')
         fo_kl_sum.write(kl_sum(original_text, avg_summary_len).strip() + '\n')
         fo_lead_one.write(lead_one(original_text).strip() + '\n')
         fo_lead_k.write(lead_k(original_text, avg_summary_len).strip() + '\n')
         fo_random_k.write(random_k(original_text, avg_summary_len).strip() + '\n')
+        fo_bart.write(bart_no_finetuning(original_text, summarizer, avg_summary_len).strip() + '\n')
         fo_ref.write(reference_summary.strip() + '\n')
-
-        break
 
     fo_text_rank.close()
     fo_kl_sum.close()
     fo_lead_one.close()
     fo_lead_k.close()
     fo_random_k.close()
+    fo_bart.close()
     fo_ref.close()
 
 
-
-def main():
-    # summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-    summarizer = None
+def run_baselines():
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
     for dataset in ['tldr', 'tosdr']:
         dir =  os.path.join('data', dataset)
         for type in ['train', 'dev', 'test']:
             filepath = os.path.join(dir, dataset+'_'+type+'.csv')
+            print(f'PROCESSING {filepath}')
             baseline_summaries(dataset, type, filepath, summarizer)
-            return
 
-    # print("TEXT RANK")
-    # print(text_rank(test))
-    # print("KL SUM")
-    # print(kl_sum(test))
-    # print("LEAD ONE")
-    # print(lead_one(original_text))
-    # print("LEAD K")
-    # print(lead_k(original_text))
-    # print("RANDOM K")
-    # print(random_k(original_text))
-    # print("BART")
-    # print(bart_no_finetuning(original_text, summarizer))
 
-    #TODO: ROUGE scores
+def main():
+    run_baselines()
 
 
 if __name__ == "__main__":

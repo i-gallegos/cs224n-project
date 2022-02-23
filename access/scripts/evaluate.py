@@ -4,6 +4,12 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 #
+import sys
+import os
+
+scripts_dir = os.path.dirname(__file__)
+access_dir = os.path.join(scripts_dir, '..')
+sys.path.append(access_dir)
 
 from access.evaluation.general import evaluate_simplifier_on_turkcorpus, evaluate_simplifier_on_law
 from access.preprocessors import get_preprocessors

@@ -50,10 +50,10 @@ def read_csv(csv_file):
     df = pd.read_csv(csv_file, usecols=col_list)
     return (df['original_text'], df['reference_summary'])
 
-# be in 1st ACCESS folder
+
 def get_law_filepath(dataset, phase):
     repo_dir = get_git_root(os.getcwd())
-    dataset_path = f'{repo_dir} / DATA_{dataset}'
-    filename = f'{dataset}_{phase}.csv'
+    dataset_path = f'{repo_dir} / data / {dataset}'
+    filename = f'{dataset_path}/{dataset}_{phase}.csv'
     return read_csv(filename)
     

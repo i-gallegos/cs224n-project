@@ -162,7 +162,7 @@ def baseline_summaries(dataset, type, filepath, summarizer):
 
 
 def run_baselines():
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0)
 
     for dataset in ['tldr', 'tosdr']:
         dir =  os.path.join('data', dataset)

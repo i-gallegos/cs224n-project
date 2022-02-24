@@ -5,6 +5,12 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+import os
+import sys
+scripts_dir = os.path.dirname(__file__)
+access_dir = os.path.join(scripts_dir, '..')
+sys.path.append(access_dir)
+
 from access.evaluation.general import evaluate_simplifier_on_turkcorpus, evaluate_simplifier_on_law
 from access.preprocessors import get_preprocessors
 from access.resources.prepare import prepare_turkcorpus, prepare_models

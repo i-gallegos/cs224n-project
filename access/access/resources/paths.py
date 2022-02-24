@@ -64,7 +64,7 @@ def get_law_filepath(dataset, phase):
 
 def get_pred_filepath(dataset, phase):
     cur_path = os.getcwd() 
-    pred_file = open(f'preds_{dataset}_{phase}', 'w')
+    pred_file = open(f'{cur_path}/access/preds/preds_{dataset}_{phase}', 'w')
     pred_file.close()
-    pred_file_path = f'{cur_path}/preds/preds_{dataset}_{phase}'
-    return pred_file_path
+    pred_filepath = f'{cur_path}/access/preds/preds_{dataset}_{phase}'
+    return pred_filepath

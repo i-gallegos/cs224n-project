@@ -1,2 +1,7 @@
 data/.ipynb_checkpoints/
 __pycache__
+data/billsum
+data/small_billsum/small_billsum_train.csv
+data/small_billsum/small_billsum_dev.csv
+data/small_billsum/small_billsum_test.csv
+data/small_billsum/small_billsum.csv

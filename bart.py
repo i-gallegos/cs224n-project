@@ -1,9 +1,11 @@
+import os
+import pandas as pd
 from transformers import AutoModel, AutoTokenizer
 from transformers import AdamW, get_linear_schedule_with_warmup
 from transformers import TrainingArguments, Trainer
 from transformers import TrainerCallback, EarlyStoppingCallback
 from tqdm.notebook import tqdm
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 
 # Download the model
 model_name = "facebook/bart-large-cnn"
@@ -14,7 +16,6 @@ BATCH_SIZE = 16
 class CustomDataset(Dataset):
   def __init__(self,file_name):
     df=pd.read_csv(file_name)
-
     x=df['original_text'].values
     y=df['reference_summary'].values
 
@@ -25,7 +26,7 @@ class CustomDataset(Dataset):
     return len(self.y)
 
   def __getitem__(self,idx):
-    return self.x[idx],self.y[idx]
+    return {'original_text':self.x[idx],'reference_summary':self.y[idx]}
 
 
 class LoggingCallback(TrainerCallback):
@@ -55,7 +56,8 @@ def create_dataloaders(train_path, dev_path, test_path):
     test_dataset = CustomDataset(test_path)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
-    return train_loader, dev_loader, test_loader
+    # return train_loader, dev_loader, test_loader
+    return train_dataset, dev_dataset, test_dataset
 
 def train(train_dataset, dev_dataset):
     # Load model
@@ -79,7 +81,7 @@ def train(train_dataset, dev_dataset):
         model=model,
         args=arguments,
         train_dataset=train_dataset,
-        eval_dataset=eval_dataset,
+        eval_dataset=dev_dataset,
         tokenizer=tokenizer,
         compute_metrics=compute_metrics
     )
@@ -107,6 +109,7 @@ def main():
     test_path = os.path.join('data', dataset, dataset+'_test.csv')
     train_loader, dev_loader, test_loader = create_dataloaders(train_path, dev_path, test_path)
 
+    print(train_loader[0])
     train(train_loader, dev_loader)
     # test()
 

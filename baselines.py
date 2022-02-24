@@ -8,6 +8,10 @@ from sumy.nlp.tokenizers import Tokenizer
 from transformers import pipeline
 import evalRouge
 
+DATASETS = ['tldr', 'tosdr']
+# SPLITS = ['train', 'dev', 'test']
+SPLITS = ['test']
+
 def adjust_summary_len(summary, avg_summary_len):
     '''For the sentence which causes the summary to exceed the budget, we keep
     or discard the full sentence depending on which resulting summary is closer
@@ -118,13 +122,16 @@ def bart_no_finetuning(text, summarizer, avg_summary_len):
     return summarizer(text, max_length=avg_summary_len+10, min_length=10, do_sample=False)[0]['summary_text']
 
 
-def baseline_summaries(dataset, type, filepath, summarizer):
+def baseline_summaries(dataset, split, filepath, summarizer, simplified):
     df = pd.read_csv(filepath)
 
     # avg_summary_len should be average number of words among all summaries
     avg_summary_len = int(df['reference_summary'].str.len().mean())
 
-    out_dir = os.path.join('results', 'baselines', dataset, type)
+    if simplified:
+        out_dir = os.path.join('results', 'baselines', 'simplified', dataset, split)
+    else:
+        out_dir = os.path.join('results', 'baselines', dataset, split)
     os.makedirs(out_dir, exist_ok=True)
 
     fout_text_rank = os.path.join(out_dir, 'text_rank.txt')
@@ -132,7 +139,7 @@ def baseline_summaries(dataset, type, filepath, summarizer):
     fout_lead_one = os.path.join(out_dir, 'lead_one.txt')
     fout_lead_k = os.path.join(out_dir, 'lead_k.txt')
     fout_random_k = os.path.join(out_dir, 'random_k.txt')
-    # fout_bart = os.path.join(out_dir, 'bart.txt')
+    fout_bart = os.path.join(out_dir, 'bart.txt')
     fout_ref = os.path.join(out_dir, 'ref.txt')
 
     fo_text_rank = open(fout_text_rank, 'w')
@@ -140,7 +147,7 @@ def baseline_summaries(dataset, type, filepath, summarizer):
     fo_lead_one = open(fout_lead_one, 'w')
     fo_lead_k = open(fout_lead_k, 'w')
     fo_random_k = open(fout_random_k, 'w')
-    # fo_bart = open(fout_bart, 'w')
+    fo_bart = open(fout_bart, 'w')
     fo_ref = open(fout_ref, 'w')
 
     for index, row in df.iterrows():
@@ -153,7 +160,7 @@ def baseline_summaries(dataset, type, filepath, summarizer):
         fo_lead_one.write(lead_one(original_text).strip() + '\n')
         fo_lead_k.write(lead_k(original_text, avg_summary_len).strip() + '\n')
         fo_random_k.write(random_k(original_text, avg_summary_len).strip() + '\n')
-        # fo_bart.write(bart_no_finetuning(original_text, summarizer, avg_summary_len).strip() + '\n')
+        fo_bart.write(bart_no_finetuning(original_text, summarizer, avg_summary_len).strip() + '\n')
         fo_ref.write(reference_summary.strip() + '\n')
 
     fo_text_rank.close()
@@ -161,27 +168,32 @@ def baseline_summaries(dataset, type, filepath, summarizer):
     fo_lead_one.close()
     fo_lead_k.close()
     fo_random_k.close()
-    # fo_bart.close()
+    fo_bart.close()
     fo_ref.close()
 
 
-def run_baselines():
-    # summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0) # for GPU
-    summarizer = None
+def run_baselines(simplified=False):
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0) # for GPU
 
-    for dataset in ['tldr', 'tosdr']:
+    for dataset in DATASETS:
         dir =  os.path.join('data', dataset)
-        for type in ['train', 'dev', 'test']:
-            filepath = os.path.join(dir, dataset+'_'+type+'.csv')
+        for split in SPLITS:
+            if simplified:
+                filepath = os.path.join(dir, dataset+'_'+split+'_simplified.csv')
+            else:
+                filepath = os.path.join(dir, dataset+'_'+split+'.csv')
             print(f'PROCESSING {filepath}')
-            baseline_summaries(dataset, type, filepath, summarizer)
+            baseline_summaries(dataset, split, filepath, summarizer, simplified)
 
 
-def compute_metrics():
+def compute_metrics(simplified=False):
     df = pd.DataFrame(columns=['dataset', 'split', 'baseline', 'R-1', 'R-2', 'R-L'])
-    for dataset in ['tldr', 'tosdr']:
-        dir =  os.path.join('results', 'baselines', dataset)
-        for split in ['train', 'dev', 'test']:
+    for dataset in DATASETS:
+        if simplified:
+            dir =  os.path.join('results', 'baselines', 'simplified', dataset)
+        else:
+            dir = os.path.join('results', 'baselines', dataset)
+        for split in SPLITS:
             for baseline in ['bart', 'kl_sum', 'lead_k', 'lead_one', 'random_k', 'text_rank']:
                 print(f'Computing metrics for {dataset}, {split}, {baseline}')
                 preds = os.path.join(dir, split, baseline+'.txt')
@@ -195,11 +207,15 @@ def compute_metrics():
                                                             'R-2':[rouge['rouge-2']['f']],
                                                             'R-L':[rouge['rouge-l']['f']]})), ignore_index=True)
 
-    df.to_csv(os.path.join('results', 'baselines', 'baseline_rouge.csv'), index=False)
+    if simplified:
+        save_path = os.path.join('results', 'baselines', 'baseline_simplified_rouge.csv')
+    else:
+        save_path = os.path.join('results', 'baselines', 'baseline_rouge.csv')
+    df.to_csv(save_path, index=False)
 
 def main():
-    # run_baselines()
-    compute_metrics()
+    run_baselines(simplified=True)
+    # compute_metrics(simplified=True)
 
 
 if __name__ == "__main__":

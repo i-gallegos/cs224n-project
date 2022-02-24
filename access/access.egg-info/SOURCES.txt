@@ -1,0 +1,9 @@
+LICENSE
+README.md
+setup.cfg
+setup.py
+access.egg-info/PKG-INFO
+access.egg-info/SOURCES.txt
+access.egg-info/dependency_links.txt
+access.egg-info/requires.txt
+access.egg-info/top_level.txt

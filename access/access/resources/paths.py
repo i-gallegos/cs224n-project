@@ -40,25 +40,31 @@ def get_filepaths_dict(dataset):
     return {(phase, language): get_data_filepath(dataset, phase, language)
             for phase, language in product(PHASES, LANGUAGES)}
 
-def read_csv(csv_file):
+def read_csv(csv_file, dataset, phase):
     with open(csv_file, 'r') as input_file:
         col_list = ['original_text', 'reference_summary']
         df = pd.read_csv(input_file, usecols=col_list)
 
     # create files with data from csv
-    with open('original_file.txt', "w") as orig_file:
+    with open(f'original_{dataset}_{phase}.txt', "w") as orig_file:
         [orig_file.write("".join(row)+'\n') for row in df['original_text']]
         orig_file.close()
 
-    with open('reference_file.txt', "w") as ref_file:
+    with open(f'reference_{dataset}_{phase}.txt', "w") as ref_file:
         [ref_file.write("".join(row)+'\n') for row in df['reference_summary']]
         ref_file.close()
-    return 'original_file.txt', 'reference_file.txt'
+    return f'original_{dataset}_{phase}.txt', f'reference_{dataset}_{phase}.txt'
 
 # be in cs224n-project/access
 def get_law_filepath(dataset, phase):
     cur_path = os.getcwd() 
     dataset_path = f'{cur_path}/../data/{dataset}'
     filename = f'{dataset_path}/{dataset}_{phase}.csv'
-    return read_csv(filename)
-    
+    return read_csv(filename, dataset, phase)
+
+def get_pred_filepath(dataset, phase):
+    cur_path = os.getcwd() 
+    pred_file = open(f'preds_{dataset}_{phase}', 'w')
+    pred_file.close()
+    pred_file_path = f'{cur_path}/preds/preds_{dataset}_{phase}'
+    return pred_file_path

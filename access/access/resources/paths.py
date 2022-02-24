@@ -53,7 +53,7 @@ def read_csv(csv_file, dataset, phase):
     with open(f'reference_{dataset}_{phase}.txt', "w") as ref_file:
         [ref_file.write("".join(row)+'\n') for row in df['reference_summary']]
         ref_file.close()
-    return f'original_{dataset}_{phase}', f'reference_{dataset}_{phase}.txt'
+    return f'original_{dataset}_{phase}.txt', f'reference_{dataset}_{phase}.txt'
 
 # be in cs224n-project/access
 def get_law_filepath(dataset, phase):

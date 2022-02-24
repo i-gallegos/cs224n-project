@@ -8,7 +8,8 @@ from sumy.nlp.tokenizers import Tokenizer
 from transformers import pipeline
 import evalRouge
 
-DATASETS = ['tldr', 'tosdr', 'billsum']
+# DATASETS = ['tldr', 'tosdr', 'small_billsum']
+DATASETS = ['small_billsum']
 # SPLITS = ['train', 'dev', 'test']
 SPLITS = ['test']
 
@@ -119,8 +120,12 @@ def random_k(text, avg_summary_len):
 
 
 def bart_no_finetuning(text, summarizer, avg_summary_len):
-    return summarizer(text, max_length=avg_summary_len+10, min_length=10, do_sample=False)[0]['summary_text']
-
+    text = (' ').join(text.split()[:512])
+    try:
+        summary = summarizer(text, max_length=min(1024, avg_summary_len+10), min_length=10, do_sample=False)[0]['summary_text']
+    except:
+        summary = 'none'
+    return summary
 
 def baseline_summaries(dataset, split, filepath, summarizer, simplified):
     df = pd.read_csv(filepath)

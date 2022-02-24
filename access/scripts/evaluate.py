@@ -36,5 +36,7 @@ if __name__ == '__main__':
     simplifier = get_fairseq_simplifier(best_model_dir, beam=8)
     simplifier = get_preprocessed_simplifier(simplifier, preprocessors=preprocessors)
     #print(evaluate_simplifier_on_turkcorpus(simplifier, phase='test'))
+    print("tldr (test)")
     print(evaluate_simplifier_on_law('tldr', simplifier, phase='test'))
-    #print(evaluate_simplifier_on_law('tldr', simplifier, phase='test'))
+    print("tosdr (test)")
+    print(evaluate_simplifier_on_law('tosdr', simplifier, phase='test'))

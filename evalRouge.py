@@ -23,6 +23,11 @@ def eval(model_file, ref_file):
     model_txt = model_txt.split('\n')
     ref_txt = ref_txt.split('\n')
 
+    # Remove empty line at end of file
+    if model_txt[-1] == '':
+        model_txt.pop()
+        ref_txt.pop()
+
     # compute rouge scores
     rouge = Rouge()
     scores = rouge.get_scores(model_txt, ref_txt, avg=True)
@@ -30,7 +35,7 @@ def eval(model_file, ref_file):
     print(scores)
     return scores
 
-# driver code: parse model_output and reference 
+# driver code: parse model_output and reference
 def eval_rogue(args):
     argp = argparse.ArgumentParser()
     argp.add_argument('model_output', help="predicted summarized sentences model outputs")

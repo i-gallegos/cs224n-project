@@ -4,12 +4,18 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 #
+import os
+import sys
+scripts_dir = os.path.dirname(__file__)
+access_dir = os.path.join(scripts_dir, '..')
+sys.path.append(access_dir)
 
 from easse.cli import evaluate_system_output
 
 from access.preprocess import lowercase_file, to_lrb_rrb_file
 from access.resources.paths import get_data_filepath, get_law_filepath
 from access.utils.helpers import mute, get_temp_filepath
+
 '''A simplifier is a method with signature: simplifier(complex_filepath, output_pred_filepath)'''
 
 

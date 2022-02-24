@@ -41,22 +41,18 @@ def get_filepaths_dict(dataset):
             for phase, language in product(PHASES, LANGUAGES)}
 
 def read_csv(csv_file):
-    col_list = ['original_text', 'reference_summary']
-    df = pd.read_csv(csv_file, usecols=col_list)
+    with open(csv_file, 'r') as input_file:
+        col_list = ['original_text', 'reference_summary']
+        df = pd.read_csv(input_file, usecols=col_list)
 
     # create files with data from csv
-    orig_file = open('original_file.txt', 'w')
-    writer = csv.writer(orig_file)
-    for row in df['original_text']:
-        writer.writerow(row)
-    orig_file.close()
+    with open('original_file.txt', "w") as orig_file:
+        [orig_file.write("".join(row)+'\n') for row in df['original_text']]
+        orig_file.close()
 
-    ref_file = open('reference_file.txt', 'w')
-    writer = csv.writer(ref_file)
-    for row in df['reference_summary']:
-        writer.writerow(row)
-    ref_file.close()
-
+    with open('reference_file.txt', "w") as ref_file:
+        [ref_file.write("".join(row)+'\n') for row in df['reference_summary']]
+        ref_file.close()
     return 'original_file.txt', 'reference_file.txt'
 
 # be in cs224n-project/access

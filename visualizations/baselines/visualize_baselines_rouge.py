@@ -10,7 +10,7 @@ def plot_bar_graph(df, ax, title):
     return ax
 
 # Load data
-rouge_path = '../../results/baselines/baseline_rouge.csv'
+rouge_path = '../../results/baselines/baseline_simplified_rouge.csv'
 rouge = pd.read_csv(rouge_path)
 rouge_test = rouge[rouge['split'] == 'test'].drop(columns=['split'])
 print(rouge_test)
@@ -25,4 +25,4 @@ fig.supylabel('ROUGE F-1 Score')
 fig.supxlabel('Baseline Method')
 fig.legend(['TLDR', 'TOSDR'])
 fig.subplots_adjust(hspace=0.4)
-plt.savefig('baseline_rouge.png')
+plt.savefig('baseline_simplified_rouge.png')

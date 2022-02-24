@@ -214,8 +214,8 @@ def compute_metrics(simplified=False):
     df.to_csv(save_path, index=False)
 
 def main():
-    run_baselines(simplified=True)
-    # compute_metrics(simplified=True)
+    # run_baselines(simplified=True)
+    compute_metrics(simplified=True)
 
 
 if __name__ == "__main__":

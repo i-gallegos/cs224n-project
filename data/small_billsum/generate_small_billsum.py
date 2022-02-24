@@ -9,7 +9,7 @@ dev = pd.read_csv(os.path.join(load_dir, 'billsum_train.csv'))
 test = pd.read_csv(os.path.join(load_dir, 'billsum_train.csv'))
 
 df = pd.concat((train, dev, test))
-small_df = df.sample(frac=0.25, replace=False, random_state=0)
+small_df = df.sample(frac=0.10, replace=False, random_state=0)
 small_df.to_csv('small_billsum.csv', index=False)
 
 #70/15/15 split

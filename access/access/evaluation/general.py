@@ -53,7 +53,7 @@ def evaluate_simplifier_on_law(dataset, simplifier, phase):
     pred_filepath, reference_summaries = get_prediction_on_law(dataset, simplifier, phase)
     pred_filepath = lowercase_file(pred_filepath)
     pred_filepath = to_lrb_rrb_file(pred_filepath)
-    return evaluate_system_output(reference_summaries,
-                                  sys_sents_path=pred_filepath,
+    return evaluate_system_output(sys_sents_path=pred_filepath,
+                                  refs_sents_paths =[reference_summaries],
                                   metrics=['bleu', 'sari_legacy', 'fkgl'],
                                   quality_estimation=True)

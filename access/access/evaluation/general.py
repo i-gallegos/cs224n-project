@@ -44,7 +44,7 @@ TODO: add any functions for eval for our specific datasets
 """
 def get_prediction_on_law(dataset, simplifier, phase):
     orig_filepath, reference_filepath = get_law_filepath(dataset, phase)
-    pred_filepath = get_temp_filepath()
+    pred_filepath = open(f'pred_{dataset}_phase', 'w')
     with mute():
         simplifier(orig_filepath, pred_filepath)
     return pred_filepath, reference_filepath, orig_filepath

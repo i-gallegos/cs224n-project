@@ -68,3 +68,8 @@ def get_pred_filepath(dataset, phase):
     pred_file.close()
     pred_filepath = f'{cur_path}/access/preds/preds_{dataset}_{phase}'
     return pred_filepath
+
+def get_postBART_filepath(dataset, phase):
+    cur_path = os.getcwd() 
+    dataset_path = f'{cur_path}/../results/baselines/{dataset}/{phase}/bart.txt'
+    return dataset_path

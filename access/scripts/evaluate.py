@@ -11,7 +11,7 @@ scripts_dir = os.path.dirname(__file__)
 access_dir = os.path.join(scripts_dir, '..')
 sys.path.append(access_dir)
 
-from access.evaluation.general import evaluate_simplifier_on_turkcorpus, evaluate_simplifier_on_law
+from access.evaluation.general import evaluate_simplifier_on_law
 from access.preprocessors import get_preprocessors
 from access.resources.prepare import prepare_turkcorpus, prepare_models
 from access.simplifiers import get_fairseq_simplifier, get_preprocessed_simplifier
@@ -40,3 +40,6 @@ if __name__ == '__main__':
     print(evaluate_simplifier_on_law('tldr', simplifier, phase='test'))
     print("tosdr (test)")
     print(evaluate_simplifier_on_law('tosdr', simplifier, phase='test'))
+    print("billsum (test)")
+    print(evaluate_simplifier_on_law('small_billsum', simplifier, phase='test'))
+    

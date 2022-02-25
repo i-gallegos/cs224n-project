@@ -6,7 +6,11 @@ from transformers import Seq2SeqTrainingArguments, TrainingArguments, Trainer, S
 from transformers import TrainerCallback, EarlyStoppingCallback
 from tqdm.notebook import tqdm
 from torch.utils.data import DataLoader, Dataset
+import torch
 from datasets import load_metric, load_dataset
+
+device = torch.cuda.current_device() if torch.cuda.is_available() else 'cpu'
+num_workers = 0 if device == 'cpu' else 4
 
 # Download the model
 model_name = "facebook/bart-large-cnn"
@@ -14,6 +18,8 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 metric = load_metric("rouge")
 
 BATCH_SIZE = 16
+NUM_TRAIN_EPOCHS = 3
+LEARNING_RATE = 2e-5
 MAX_SOURCE_LENGTH = 1024
 MAX_TARGET_LENGTH = 128
 PADDING = "max_length"
@@ -95,7 +101,7 @@ def compute_metrics(eval_preds):
 
 def train(raw_datasets):
     # Load model
-    model = AutoModel.from_pretrained(model_name)
+    model = AutoModel.from_pretrained(model_name).to(device)
     train_dataset = raw_datasets["train"].map(preprocess_function, batched=True)
     dev_dataset = raw_datasets["validation"].map(preprocess_function, batched=True)
 
@@ -104,10 +110,11 @@ def train(raw_datasets):
         output_dir=f"{model_name}-finetuned",
         per_device_train_batch_size=BATCH_SIZE,
         per_device_eval_batch_size=BATCH_SIZE,
-        num_train_epochs=3,
+        dataloader_num_workers=num_workers,
+        num_train_epochs=NUM_TRAIN_EPOCHS,
         evaluation_strategy="epoch", # run validation at the end of each epoch
         save_strategy="epoch",
-        learning_rate=2e-5,
+        learning_rate=LEARNING_RATE,
         load_best_model_at_end=True,
         seed=224
     )

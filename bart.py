@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from transformers import AutoModel, AutoTokenizer, DataCollatorForSeq2Seq
 from transformers import AdamW, get_linear_schedule_with_warmup
-from transformers import Seq2SeqTrainingArguments, TrainingArguments, Trainer
+from transformers import Seq2SeqTrainingArguments, TrainingArguments, Trainer, Seq2SeqTrainer
 from transformers import TrainerCallback, EarlyStoppingCallback
 from tqdm.notebook import tqdm
 from torch.utils.data import DataLoader, Dataset
@@ -28,26 +28,13 @@ class LoggingCallback(TrainerCallback):
             with open(self.log_path, "a") as f:
                 f.write(json.dumps(logs) + "\n")
 
-def compute_metrics(eval_pred):
-    predictions, labels = eval_pred
-    decoded_preds = tokenizer.batch_decode(predictions, skip_special_tokens=True)
-    # Replace -100 in the labels as we can't decode them.
-    labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
-    decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
-
-    # Rouge expects a newline after each sentence
-    decoded_preds = ["\n".join(nltk.sent_tokenize(pred.strip())) for pred in decoded_preds]
-    decoded_labels = ["\n".join(nltk.sent_tokenize(label.strip())) for label in decoded_labels]
-
-    result = metric.compute(predictions=decoded_preds, references=decoded_labels, use_stemmer=True)
-    # Extract a few results
-    result = {key: value.mid.fmeasure * 100 for key, value in result.items()}
-
-    # Add mean generated length
-    prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in predictions]
-    result["gen_len"] = np.mean(prediction_lens)
-
-    return {k: round(v, 4) for k, v in result.items()}
+def create_datasets(train_path, dev_path, test_path):
+    data_files = {}
+    data_files["train"] = train_path
+    data_files["validation"] = dev_path
+    data_files["test"] = test_path
+    raw_datasets = load_dataset('csv', data_files=data_files)
+    return raw_datasets
 
 
 def preprocess_function(examples):
@@ -73,14 +60,38 @@ def preprocess_function(examples):
     model_inputs["labels"] = labels["input_ids"]
     return model_inputs
 
+def postprocess_text(preds, labels):
+    preds = [pred.strip() for pred in preds]
+    labels = [label.strip() for label in labels]
 
-def create_datasets(train_path, dev_path, test_path):
-    data_files = {}
-    data_files["train"] = train_path
-    data_files["validation"] = dev_path
-    data_files["test"] = test_path
-    raw_datasets = load_dataset('csv', data_files=data_files)
-    return raw_datasets
+    # rougeLSum expects newline after each sentence
+    preds = ["\n".join(nltk.sent_tokenize(pred)) for pred in preds]
+    labels = ["\n".join(nltk.sent_tokenize(label)) for label in labels]
+
+    return preds, labels
+
+def compute_metrics(eval_preds):
+    preds, labels = eval_preds
+    if isinstance(preds, tuple):
+        preds = preds[0]
+    decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True)
+    if data_args.ignore_pad_token_for_loss:
+        # Replace -100 in the labels as we can't decode them.
+        labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+    decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
+
+    # Some simple post-processing
+    decoded_preds, decoded_labels = postprocess_text(decoded_preds, decoded_labels)
+
+    result = metric.compute(predictions=decoded_preds, references=decoded_labels, use_stemmer=True)
+    # Extract a few results from ROUGE
+    result = {key: value.mid.fmeasure * 100 for key, value in result.items()}
+
+    prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in preds]
+    result["gen_len"] = np.mean(prediction_lens)
+    result = {k: round(v, 4) for k, v in result.items()}
+    return result
+
 
 def train(raw_datasets):
     # Load model
@@ -101,10 +112,10 @@ def train(raw_datasets):
         seed=224
     )
 
-    data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)
+    data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, label_pad_token_id=-100)
 
     # Train the model
-    trainer = Trainer(
+    trainer = Seq2SeqTrainer(
         model=model,
         args=arguments,
         train_dataset=train_dataset,
@@ -119,10 +130,16 @@ def train(raw_datasets):
     print("TRAINING")
     trainer.train()
 
-    # Evaluate the model
-    results = trainer.predict(small_tokenized_dataset['val']) # also gives you predictions
+    train_result = trainer.train(resume_from_checkpoint=checkpoint)
+    trainer.save_model()  # Saves the tokenizer too for easy upload
 
-def test(test_text):
+    metrics = train_result.metrics
+    metrics["train_samples"] = len(train_dataset)
+    trainer.log_metrics("train", metrics)
+    trainer.save_metrics("train", metrics)
+    trainer.save_state()
+
+def evaluate(test_text):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     finetuned_model = AutoModel.from_pretrained("trainer/checkpoint-24")
     model_inputs = tokenizer(test_text, return_tensors="pt")

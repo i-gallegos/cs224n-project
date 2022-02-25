@@ -66,6 +66,8 @@ def kl_sum(text, avg_summary_len):
         else:
             summary = new_summary
 
+    if len(summary) == 0:
+        summary += 'none'
     return (' ').join([str(sentence) for sentence in summary])
 
 
@@ -92,6 +94,8 @@ def lead_k(text, avg_summary_len):
         else:
             break
 
+    if len(summary) == 0:
+        summary += 'none'
     return ('. ').join(summary)
 
 
@@ -117,6 +121,8 @@ def random_k(text, avg_summary_len):
         else:
             break
 
+    if len(summary) == 0:
+        summary += 'none'
     return ('. ').join(summary)
 
 
@@ -145,7 +151,7 @@ def baseline_summaries(dataset, split, filepath, summarizer, simplified):
     fout_lead_one = os.path.join(out_dir, 'lead_one.txt')
     fout_lead_k = os.path.join(out_dir, 'lead_k.txt')
     fout_random_k = os.path.join(out_dir, 'random_k.txt')
-    fout_bart = os.path.join(out_dir, 'bart.txt')
+    # fout_bart = os.path.join(out_dir, 'bart.txt')
     fout_ref = os.path.join(out_dir, 'ref.txt')
 
     fo_text_rank = open(fout_text_rank, 'w')
@@ -153,7 +159,7 @@ def baseline_summaries(dataset, split, filepath, summarizer, simplified):
     fo_lead_one = open(fout_lead_one, 'w')
     fo_lead_k = open(fout_lead_k, 'w')
     fo_random_k = open(fout_random_k, 'w')
-    fo_bart = open(fout_bart, 'w')
+    # fo_bart = open(fout_bart, 'w')
     fo_ref = open(fout_ref, 'w')
 
     for index, row in df.iterrows():
@@ -166,7 +172,7 @@ def baseline_summaries(dataset, split, filepath, summarizer, simplified):
         fo_lead_one.write(lead_one(original_text).strip() + '\n')
         fo_lead_k.write(lead_k(original_text, avg_summary_len).strip() + '\n')
         fo_random_k.write(random_k(original_text, avg_summary_len).strip() + '\n')
-        fo_bart.write(bart_no_finetuning(original_text, summarizer, avg_summary_len).strip() + '\n')
+        # fo_bart.write(bart_no_finetuning(original_text, summarizer, avg_summary_len).strip() + '\n')
         fo_ref.write(reference_summary.strip() + '\n')
 
     fo_text_rank.close()
@@ -174,12 +180,13 @@ def baseline_summaries(dataset, split, filepath, summarizer, simplified):
     fo_lead_one.close()
     fo_lead_k.close()
     fo_random_k.close()
-    fo_bart.close()
+    # fo_bart.close()
     fo_ref.close()
 
 
 def run_baselines(simplified=False):
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0) # for GPU
+    # summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0) # for GPU
+    summarizer = None
 
     for dataset in DATASETS:
         dir =  os.path.join('data', dataset)
@@ -205,7 +212,7 @@ def compute_metrics(simplified=False):
                 print(f'Computing metrics for {dataset}, {split}, {baseline}')
                 preds = os.path.join(dir, split, baseline+'.txt')
                 true = os.path.join(dir, split, 'ref.txt')
-                print('here')
+
                 rouge = evalRouge.eval(preds, true)
                 df = pd.concat((df, pd.DataFrame.from_dict({'dataset':dataset,
                                                             'split':split,
@@ -222,8 +229,8 @@ def compute_metrics(simplified=False):
     df.to_csv(save_path, index=False)
 
 def main():
-    run_baselines(simplified=False)
-    # compute_metrics(simplified=False)
+    # run_baselines(simplified=False)
+    compute_metrics(simplified=False)
 
 
 if __name__ == "__main__":

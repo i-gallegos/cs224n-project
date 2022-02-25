@@ -6,7 +6,7 @@ def plot_bar_graph(df, ax, title):
     df = df.pivot_table(index=['baseline'], columns=['dataset'])
     df.plot.bar(rot=0, ax=ax, legend=False, xlabel='')
     ax.set_title(title)
-    ax.set_ylim([0,0.3])
+    ax.set_ylim([0,0.4])
     return ax
 
 # Load data
@@ -23,6 +23,6 @@ ax3 = plot_bar_graph(rouge_test.drop(columns=['R-1', 'R-2']), ax3, 'R-L')
 
 fig.supylabel('ROUGE F-1 Score')
 fig.supxlabel('Baseline Method')
-fig.legend(['TLDR', 'TOSDR'])
+fig.legend(['TLDR', 'TOSDR', 'Billsum'])
 fig.subplots_adjust(hspace=0.4)
-plt.savefig('baseline_simplified_rouge.png')
+plt.savefig('baseline_rouge.png')

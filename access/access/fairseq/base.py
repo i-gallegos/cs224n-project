@@ -186,7 +186,7 @@ def _fairseq_generate(complex_filepath,
                       diverse_beam_groups=None,
                       diverse_beam_strength=0.5,
                       sampling=False,
-                      batch_size=128):
+                      batch_size=80): #normally 128
     # exp_dir must contain checkpoints/checkpoint_best.pt, and dict.{complex,simple}.txt
     # First copy input complex file to exp_dir and create dummy simple file
     tmp_dir = Path(tempfile.mkdtemp())
@@ -264,7 +264,7 @@ def fairseq_generate(complex_filepath,
                      diverse_beam_groups=None,
                      diverse_beam_strength=0.5,
                      sampling=False,
-                     batch_size=128):
+                     batch_size=80): # normally 128
     exp_dir = Path(exp_dir)
     checkpoint_path = exp_dir / 'checkpoints/checkpoint_best.pt'
     assert checkpoint_path.exists(), f'Generation failed, no checkpoint at {checkpoint_path}'

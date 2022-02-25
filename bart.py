@@ -14,34 +14,9 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 metric = load_metric("rouge")
 
 BATCH_SIZE = 16
-
-class CustomDataset(Dataset):
-    def __init__(self,file_name):
-        df = pd.read_csv(file_name)
-        x = tokenizer(df['original_text'].tolist(), truncation=True, padding=True)
-        with tokenizer.as_target_tokenizer():
-            y = tokenizer(df['reference_summary'].tolist(), truncation=True, padding=True)
-        id = range(len(y))
-
-
-        self.document = df['original_text'].tolist()
-        self.summary = df['reference_summary'].tolist()
-        self.id = id
-        self.input_ids = x['input_ids']
-        self.attention_mask = x['attention_mask']
-        self.labels = y['input_ids']
-
-    def __len__(self):
-        return len(self.id)
-
-    def __getitem__(self,idx):
-        return {'document':self.document[idx],
-                'summary':self.summary[idx],
-                'id':self.id[idx],
-                'input_ids':self.input_ids[idx],
-                'attention_mask':self.attention_mask[idx],
-                'labels':self.labels[idx]}
-
+MAX_SOURCE_LENGTH = 1024
+MAX_TARGET_LENGTH = 128
+PADDING = "max_length"
 
 class LoggingCallback(TrainerCallback):
     def __init__(self, log_path):
@@ -75,39 +50,43 @@ def compute_metrics(eval_pred):
     return {k: round(v, 4) for k, v in result.items()}
 
 
+def preprocess_function(examples):
+    inputs, targets = [], []
+    for i in range(len(examples["document"])):
+        if examples["document"][i] is not None and examples["summary"][i] is not None:
+            inputs.append(examples["document"][i])
+            targets.append(examples["summary"][i])
+
+    model_inputs = tokenizer(inputs, max_length=MAX_SOURCE_LENGTH, padding=PADDING, truncation=True)
+
+    # Setup the tokenizer for targets
+    with tokenizer.as_target_tokenizer():
+        labels = tokenizer(targets, max_length=MAX_TARGET_LENGTH, padding=PADDING, truncation=True)
+
+    # If we are padding here, replace all tokenizer.pad_token_id in the labels by -100 when we want to ignore
+    # padding in the loss.
+    if PADDING == "max_length":
+        labels["input_ids"] = [
+            [(l if l != tokenizer.pad_token_id else -100) for l in label] for label in labels["input_ids"]
+        ]
+
+    model_inputs["labels"] = labels["input_ids"]
+    return model_inputs
+
+
 def create_datasets(train_path, dev_path, test_path):
-    prefix = "summarize: "
-    # prefix = ""
-    max_input_length = 1024
-    max_target_length = 128
+    data_files = {}
+    data_files["train"] = train_path
+    data_files["validation"] = dev_path
+    data_files["test"] = test_path
+    raw_datasets = load_dataset('csv', data_files=data_files)
+    return raw_datasets
 
-
-    def preprocess_function(examples):
-        inputs = [prefix + doc for doc in examples["document"]]
-        model_inputs = tokenizer(inputs, padding=True, truncation=True)
-        # Setup the tokenizer for targets
-        with tokenizer.as_target_tokenizer():
-            labels = tokenizer(examples["summary"], padding=True, truncation=True)
-
-        model_inputs["labels"] = labels["input_ids"]
-        return model_inputs
-
-    train_dataset = CustomDataset(train_path)
-    dev_dataset = CustomDataset(dev_path)
-    test_dataset = CustomDataset(test_path)
-
-    # raw_datasets = load_dataset("xsum")
-    # train_dataset = raw_datasets['train'].map(preprocess_function, batched=True)
-    # dev_dataset = raw_datasets.map(preprocess_function, batched=True)
-    # test_dataset = raw_datasets.map(preprocess_function, batched=True)
-
-
-    # return train_loader, dev_loader, test_loader
-    return train_dataset, dev_dataset, test_dataset
-
-def train(train_dataset, dev_dataset):
+def train(raw_datasets):
     # Load model
     model = AutoModel.from_pretrained(model_name)
+    train_dataset = raw_datasets["train"].map(preprocess_function, batched=True)
+    dev_dataset = raw_datasets["validation"].map(preprocess_function, batched=True)
 
     # Fine-tuning parameters
     arguments = Seq2SeqTrainingArguments(
@@ -153,13 +132,13 @@ def test(test_text):
 
 
 def main():
-    dataset = 'tosdr'
+    dataset = 'tldr'
     train_path = os.path.join('data', dataset, dataset+'_train.csv')
     dev_path = os.path.join('data', dataset, dataset+'_dev.csv')
     test_path = os.path.join('data', dataset, dataset+'_test.csv')
-    train_loader, dev_loader, test_loader = create_datasets(train_path, dev_path, test_path)
+    raw_datasets = create_datasets(train_path, dev_path, test_path)
 
-    train(train_loader, dev_loader)
+    train(raw_datasets)
     # test()
 
 

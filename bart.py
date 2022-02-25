@@ -17,7 +17,7 @@ model_name = "facebook/bart-large-cnn"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 metric = load_metric("rouge")
 
-BATCH_SIZE = 16
+BATCH_SIZE = 1
 NUM_TRAIN_EPOCHS = 3
 LEARNING_RATE = 2e-5
 MAX_SOURCE_LENGTH = 1024
@@ -40,6 +40,12 @@ def create_datasets(train_path, dev_path, test_path):
     data_files["validation"] = dev_path
     data_files["test"] = test_path
     raw_datasets = load_dataset('csv', data_files=data_files)
+    print(type(raw_datasets['train']['summary']))
+    print(raw_datasets['train']['id'][0])
+    raw_datasets = load_dataset('xsum')
+    print(type(raw_datasets['train']['summary']))
+    print(raw_datasets['train']['id'][0])
+    exit(0)
     return raw_datasets
 
 
@@ -110,7 +116,6 @@ def train(raw_datasets):
         output_dir=f"{model_name}-finetuned",
         per_device_train_batch_size=BATCH_SIZE,
         per_device_eval_batch_size=BATCH_SIZE,
-        dataloader_num_workers=num_workers,
         num_train_epochs=NUM_TRAIN_EPOCHS,
         evaluation_strategy="epoch", # run validation at the end of each epoch
         save_strategy="epoch",

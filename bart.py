@@ -1,3 +1,8 @@
+'''
+References:
+https://github.com/huggingface/notebooks/blob/master/examples/summarization.ipynb
+https://github.com/huggingface/transformers/blob/master/examples/pytorch/summarization/run_summarization.py
+'''
 import os
 import pandas as pd
 from transformers import AutoModel, AutoTokenizer, DataCollatorForSeq2Seq
@@ -14,6 +19,7 @@ num_workers = 0 if device == 'cpu' else 4
 
 # Download the model
 model_name = "facebook/bart-large-cnn"
+# model_name = "t5-small"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 metric = load_metric("rouge")
 
@@ -40,14 +46,7 @@ def create_datasets(train_path, dev_path, test_path):
     data_files["validation"] = dev_path
     data_files["test"] = test_path
     raw_datasets = load_dataset('csv', data_files=data_files)
-    print(type(raw_datasets['train']['summary']))
-    print(raw_datasets['train']['id'][0])
-    raw_datasets = load_dataset('xsum')
-    print(type(raw_datasets['train']['summary']))
-    print(raw_datasets['train']['id'][0])
-    exit(0)
     return raw_datasets
-
 
 def preprocess_function(examples):
     inputs, targets = [], []

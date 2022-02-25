@@ -42,9 +42,9 @@ def get_filepaths_dict(dataset):
 
 def read_csv(csv_file, dataset, phase):
     with open(csv_file, 'r') as input_file:
-        col_list = ['document', 'reference_summary']
+        col_list = ['document', 'summary']
         if dataset == 'small_billsum':
-            col_list = ['Unnamed: 0', 'original_text', 'reference_summary']
+            col_list = ['Unnamed: 0', 'document', 'summary']
         df = pd.read_csv(input_file, usecols=col_list)
 
     # create files with data from csv
@@ -53,7 +53,7 @@ def read_csv(csv_file, dataset, phase):
         orig_file.close()
 
     with open(f'reference_{dataset}_{phase}.txt', "w") as ref_file:
-        [ref_file.write("".join(row)+'\n') for row in df['reference_summary']]
+        [ref_file.write("".join(row)+'\n') for row in df['summary']]
         ref_file.close()
     return f'original_{dataset}_{phase}.txt', f'reference_{dataset}_{phase}.txt'
 

@@ -10,6 +10,6 @@ for dataset in ['tldr', 'tosdr']:
             simplified = [line.rstrip() for line in file]
 
         df = pd.read_csv(os.path.join(dataset, dataset+'_'+split+'.csv'))
-        df = df.drop(columns=['original_text'])
-        df['original_text'] = simplified
+        df = df.drop(columns=['summary'])
+        df['summary'] = simplified
         df.to_csv(os.path.join(dataset, dataset+'_'+split+'_simplified.csv'), index=False)

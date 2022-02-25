@@ -10,7 +10,7 @@ from sumy.nlp.tokenizers import Tokenizer
 from transformers import pipeline
 import evalRouge
 
-DATASETS = ['tldr', 'tosdr', 'small_billsum']
+DATASETS = ['tldr', 'tosdr']
 # SPLITS = ['train', 'dev', 'test']
 SPLITS = ['test']
 
@@ -138,7 +138,7 @@ def baseline_summaries(dataset, split, filepath, summarizer, simplified):
     df = pd.read_csv(filepath)
 
     # avg_summary_len should be average number of words among all summaries
-    avg_summary_len = int(df['reference_summary'].str.split().apply(len).mean())
+    avg_summary_len = int(df['summary'].str.split().apply(len).mean())
 
     if simplified:
         out_dir = os.path.join('results', 'baselines', 'simplified', dataset, split)
@@ -151,7 +151,7 @@ def baseline_summaries(dataset, split, filepath, summarizer, simplified):
     fout_lead_one = os.path.join(out_dir, 'lead_one.txt')
     fout_lead_k = os.path.join(out_dir, 'lead_k.txt')
     fout_random_k = os.path.join(out_dir, 'random_k.txt')
-    # fout_bart = os.path.join(out_dir, 'bart.txt')
+    fout_bart = os.path.join(out_dir, 'bart.txt')
     fout_ref = os.path.join(out_dir, 'ref.txt')
 
     fo_text_rank = open(fout_text_rank, 'w')
@@ -159,34 +159,34 @@ def baseline_summaries(dataset, split, filepath, summarizer, simplified):
     fo_lead_one = open(fout_lead_one, 'w')
     fo_lead_k = open(fout_lead_k, 'w')
     fo_random_k = open(fout_random_k, 'w')
-    # fo_bart = open(fout_bart, 'w')
+    fo_bart = open(fout_bart, 'w')
     fo_ref = open(fout_ref, 'w')
 
     for index, row in df.iterrows():
         print(f'  {index} of {len(df)}')
-        original_text = row['original_text']
-        reference_summary = row['reference_summary']
+        document = row['document']
+        summary = row['summary']
 
-        fo_text_rank.write(text_rank(original_text, avg_summary_len).strip() + '\n')
-        fo_kl_sum.write(kl_sum(original_text, avg_summary_len).strip() + '\n')
-        fo_lead_one.write(lead_one(original_text).strip() + '\n')
-        fo_lead_k.write(lead_k(original_text, avg_summary_len).strip() + '\n')
-        fo_random_k.write(random_k(original_text, avg_summary_len).strip() + '\n')
-        # fo_bart.write(bart_no_finetuning(original_text, summarizer, avg_summary_len).strip() + '\n')
-        fo_ref.write(reference_summary.strip() + '\n')
+        fo_text_rank.write(text_rank(document, avg_summary_len).strip() + '\n')
+        fo_kl_sum.write(kl_sum(document, avg_summary_len).strip() + '\n')
+        fo_lead_one.write(lead_one(document).strip() + '\n')
+        fo_lead_k.write(lead_k(document, avg_summary_len).strip() + '\n')
+        fo_random_k.write(random_k(document, avg_summary_len).strip() + '\n')
+        fo_bart.write(bart_no_finetuning(document, summarizer, avg_summary_len).strip() + '\n')
+        fo_ref.write(summary.strip() + '\n')
 
     fo_text_rank.close()
     fo_kl_sum.close()
     fo_lead_one.close()
     fo_lead_k.close()
     fo_random_k.close()
-    # fo_bart.close()
+    fo_bart.close()
     fo_ref.close()
 
 
 def run_baselines(simplified=False):
-    # summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0) # for GPU
-    summarizer = None
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=-1) # for GPU
+    # summarizer = None
 
     for dataset in DATASETS:
         dir =  os.path.join('data', dataset)
@@ -229,8 +229,8 @@ def compute_metrics(simplified=False):
     df.to_csv(save_path, index=False)
 
 def main():
-    # run_baselines(simplified=False)
-    compute_metrics(simplified=False)
+    run_baselines(simplified=True)
+    # compute_metrics(simplified=False)
 
 
 if __name__ == "__main__":

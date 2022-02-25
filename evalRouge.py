@@ -8,13 +8,16 @@ For each of these, we receive the F1 score f, precision p, and recall r.]
 
 from rouge import Rouge
 import argparse
+import sys
+
+sys.setrecursionlimit(10000)
 
 # outputs rouge scores
 def eval(model_file, ref_file):
     # get text from given files
-    with open(model_file, "r") as mf:
+    with open(model_file, "r", encoding='utf-8') as mf:
         model_txt = mf.read()
-    with open(ref_file, "r") as rf:
+    with open(ref_file, "r", encoding='utf-8') as rf:
         ref_txt = rf.read()
 
     assert(len(model_txt)) != 0
@@ -31,8 +34,8 @@ def eval(model_file, ref_file):
     # compute rouge scores
     rouge = Rouge()
     scores = rouge.get_scores(model_txt, ref_txt, avg=True)
-    print("Rouge scores: ")
-    print(scores)
+    # print("Rouge scores: ")
+    # print(scores)
     return scores
 
 # driver code: parse model_output and reference

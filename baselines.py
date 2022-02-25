@@ -185,7 +185,7 @@ def baseline_summaries(dataset, split, filepath, summarizer, simplified):
 
 
 def run_baselines(simplified=False):
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=-1) # for GPU
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0) # for GPU
     # summarizer = None
 
     for dataset in DATASETS:

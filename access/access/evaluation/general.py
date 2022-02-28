@@ -45,15 +45,19 @@ TODO: add any functions for eval for our specific datasets
 def get_prediction_on_law(dataset, simplifier, phase):
     orig_filepath, reference_filepath = get_law_filepath(dataset, phase)
     pred_filepath = get_pred_filepath(dataset, phase)
+    print(f'PRED FILEPATH: {pred_filepath}')
+    print(f'ORIG FILEPATH: {orig_filepath}')
+    print(f'ORIG FILEPATH: {reference_filepath}')
     with mute():
         simplifier(orig_filepath, pred_filepath)
-    print (pred_filepath)
+    print("PAST SIMPLIFIER")
     return pred_filepath, reference_filepath, orig_filepath
 
 def evaluate_simplifier_on_law(dataset, simplifier, phase):
     pred_filepath, reference_filepath, orig_filepath = get_prediction_on_law(dataset, simplifier, phase)
-    #pred_filepath = lowercase_file(pred_filepath)
-    #pred_filepath = to_lrb_rrb_file(pred_filepath)
+    pred_filepath = lowercase_file(pred_filepath)
+    pred_filepath = to_lrb_rrb_file(pred_filepath)
+    print(f'PRED: {pred_filepath}')
     return evaluate_system_output(test_set='custom', 
                                   sys_sents_path=pred_filepath,
                                   orig_sents_path = orig_filepath,

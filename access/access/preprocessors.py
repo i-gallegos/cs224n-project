@@ -135,7 +135,10 @@ class AbstractPreprocessor(ABC):
             for encoder_sentence, input_sentence in yield_lines_in_parallel([encoder_filepath, input_filepath],
                                                                             strict=False):
                 decoded_sentence = self.decode_sentence(input_sentence, encoder_sentence=encoder_sentence)
+                if decoded_sentence == None:
+                    decoded_sentence = ''
                 f.write(decoded_sentence + '\n')
+                #f.write(decoded_sentence + '\n')
 
     def encode_file_pair(self, complex_filepath, simple_filepath, output_complex_filepath, output_simple_filepath):
         '''Jointly encode a complex file and a simple file (can be aligned or not)'''

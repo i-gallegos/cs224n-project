@@ -248,8 +248,14 @@ def _fairseq_generate(complex_filepath,
         # Sort in original order
         return [hypotheses_dict[i] for i in range(len(hypotheses_dict))]
 
+    predictions = []
     all_hypotheses = parse_all_hypotheses(out_filepath)
-    predictions = [hypotheses[hypothesis_num - 1] for hypotheses in all_hypotheses]
+    for _, hypotheses in enumerate(all_hypotheses):
+        if len(hypotheses) == 0:
+            predictions.append('')
+        else:
+            predictions.append(hypotheses[hypothesis_num - 1])
+    #predictions = [hypotheses[hypothesis_num - 1] for hypotheses in all_hypotheses]
     write_lines(predictions, output_pred_filepath)
     os.remove(dummy_simple_filepath)
     os.remove(new_complex_filepath)

@@ -74,3 +74,8 @@ def get_pred_filepath(dataset, phase):
     pred_file.close()
     pred_filepath = f'{cur_path}/access/preds/preds_{dataset}_{phase}'
     return pred_filepath
+
+def get_post_filepath(dataset, phase, sum_model):
+    cur_path = os.getcwd() 
+    dataset_path = f'{cur_path}/../results/baselines/{dataset}/{phase}'
+    return f'{dataset_path}/{sum_model}.txt', f'reference_{dataset}_{phase}.txt'

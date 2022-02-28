@@ -11,7 +11,7 @@ scripts_dir = os.path.dirname(__file__)
 access_dir = os.path.join(scripts_dir, '..')
 sys.path.append(access_dir)
 
-from access.evaluation.general import evaluate_simplifier_on_law
+from access.evaluation.general import evaluate_simplifier_on_law, evaluate_simplifier_on_law_post
 from access.preprocessors import get_preprocessors
 from access.resources.prepare import prepare_turkcorpus, prepare_models
 from access.simplifiers import get_fairseq_simplifier, get_preprocessed_simplifier
@@ -36,10 +36,16 @@ if __name__ == '__main__':
     simplifier = get_fairseq_simplifier(best_model_dir, beam=8)
     simplifier = get_preprocessed_simplifier(simplifier, preprocessors=preprocessors)
     #print(evaluate_simplifier_on_turkcorpus(simplifier, phase='test'))
-    print("tldr (test)")
-    print(evaluate_simplifier_on_law('tldr', simplifier, phase='test'))
+    #print("tldr (test)")
+    #print(evaluate_simplifier_on_law('tldr', simplifier, phase='test'))
     #print("tosdr (test)")
     #print(evaluate_simplifier_on_law('tosdr', simplifier, phase='test'))
-    print("billsum (test)")
-    print(evaluate_simplifier_on_law('small_billsum', simplifier, phase='test'))
+    #print("billsum (test)")
+    #print(evaluate_simplifier_on_law('small_billsum', simplifier, phase='test'))
+    summary_models =['bart', 'kl_sum', 'lead_k', 'lead_one', 'random_k', 'text_rank']
+    datasets = ['tldr', 'tosdr', 'small_billsum']
     
+    for d in datasets:
+        for m in summary_models:
+            print(f'{d} post {m} (test)')
+            print(evaluate_simplifier_on_law_post(d, simplifier, phase='test', sum_model=m))

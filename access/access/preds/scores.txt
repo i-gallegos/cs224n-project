@@ -1,0 +1,64 @@
+tldr (test)
+{'bleu': 0.42452683043865735, 'sari_legacy': 33.07032665445175, 'fkgl': 16.146788487894018, 'quality_estimation': {'Compression ratio': 0.576046891550501, 'Sentence splits': 0.3749572649572651, 'Levenshtein similarity': 0.6144580765622251, 'Exact copies': 0.0, 'Additions proportion': 0.16813233144828418, 'Deletions proportion': 0.531266131283182, 'Lexical complexity score': 8.130539188044668}}
+
+tldr post bart (test)
+{'bleu': 0.7867359330320418, 'sari_legacy': 23.96482727697199, 'fkgl': 9.982276422764226, 'quality_estimation': {'Compression ratio': 0.9466369978032556, 'Sentence splits': 0.8717948717948718, 'Levenshtein similarity': 0.8770746077890569, 'Exact copies': 0.0, 'Additions proportion': 0.21474402790192262, 'Deletions proportion': 0.17088262614578403, 'Lexical complexity score': 8.300150342723017}}
+
+tldr post kl_sum (test)
+{'bleu': 1.4499107160419804, 'sari_legacy': 24.317085462068466, 'fkgl': 10.8274067937034, 'quality_estimation': {'Compression ratio': 0.9529337120048615, 'Sentence splits': 1.0615384615384615, 'Levenshtein similarity': 0.8068502780419323, 'Exact copies': 0.0, 'Additions proportion': 0.28672675363851835, 'Deletions proportion': 0.22526223776223778, 'Lexical complexity score': 7.9369429727985}}
+
+tldr post lead_k (test)
+{'bleu': 1.416934148758349, 'sari_legacy': 20.49511777855672, 'fkgl': 11.93254562043796, 'quality_estimation': {'Compression ratio': 0.9424034951774997, 'Sentence splits': 1.0769230769230769, 'Levenshtein similarity': 0.8772802356500645, 'Exact copies': 0.0, 'Additions proportion': 0.1973335023664638, 'Deletions proportion': 0.16298260816262847, 'Lexical complexity score': 8.180439369690212}}
+
+tldr post lead_one (test)
+{'bleu': 1.5635545864160185, 'sari_legacy': 20.14896366375899, 'fkgl': 11.490204081632655, 'quality_estimation': {'Compression ratio': 0.936998626082793, 'Sentence splits': 1.1538461538461537, 'Levenshtein similarity': 0.8727995375049831, 'Exact copies': 0.15384615384615385, 'Additions proportion': 0.1854682434423814, 'Deletions proportion': 0.1599157403898783, 'Lexical complexity score': 8.182820359182948}}
+
+tldr post random_k (test)
+{'bleu': 1.5696190777596613, 'sari_legacy': 23.935081427866844, 'fkgl': 9.02848451327434, 'quality_estimation': {'Compression ratio': 0.9684391594566942, 'Sentence splits': 1.0769230769230769, 'Levenshtein similarity': 0.8088864488418956, 'Exact copies': 0.0, 'Additions proportion': 0.32119279614963114, 'Deletions proportion': 0.2881248982752317, 'Lexical complexity score': 7.844420224129464}}
+
+tldr post text_rank (test)
+{'bleu': 1.815402825910462, 'sari_legacy': 22.564848278749285, 'fkgl': 7.723698817106463, 'quality_estimation': {'Compression ratio': 1.0694835373360883, 'Sentence splits': 1.0769230769230769, 'Levenshtein similarity': 0.7932698239089563, 'Exact copies': 0.0, 'Additions proportion': 0.41945245487755606, 'Deletions proportion': 0.37051309014871764, 'Lexical complexity score': 8.128285870539097}}
+
+-------------
+tosdr (test)
+{'bleu': 0.9024031608248965, 'sari_legacy': 26.963469168421522, 'fkgl': 17.98347188264059, 'quality_estimation': {'Compression ratio': 0.8685162606168243, 'Sentence splits': 0.6893801652892562, 'Levenshtein similarity': 0.8148377550026853, 'Exact copies': 0.0, 'Additions proportion': 0.2423458778601613, 'Deletions proportion': 0.2844591602054002, 'Lexical complexity score': 8.253805862417076}}
+
+tosdr post bart (test)
+{'bleu': 1.7971167644597283, 'sari_legacy': 28.08529360579065, 'fkgl': 8.199276672694396, 'quality_estimation': {'Compression ratio': 0.9251364702238278, 'Sentence splits': 0.8621212121212121, 'Levenshtein similarity': 0.8419145542061875, 'Exact copies': 0.03636363636363636, 'Additions proportion': 0.2580073733690395, 'Deletions proportion': 0.21639874893533773, 'Lexical complexity score': 8.096315698670592}}
+
+tosdr post kl_sum (test)
+{'bleu': 1.3835380131391832, 'sari_legacy': 21.947103091221035, 'fkgl': 12.014585774058578, 'quality_estimation': {'Compression ratio': 0.9436472752400228, 'Sentence splits': 1.0545454545454545, 'Levenshtein similarity': 0.8398002505268022, 'Exact copies': 0.0, 'Additions proportion': 0.259960801592645, 'Deletions proportion': 0.21069141170023384, 'Lexical complexity score': 8.02797218911863}}
+
+tosdr post lead_k (test)
+{'bleu': 2.801866827830023, 'sari_legacy': 23.590764842526937, 'fkgl': 12.340512154826527, 'quality_estimation': {'Compression ratio': 0.9343104639080453, 'Sentence splits': 1.009090909090909, 'Levenshtein similarity': 0.8568958123040895, 'Exact copies': 0.03636363636363636, 'Additions proportion': 0.2637132768680144, 'Deletions proportion': 0.20453704899248823, 'Lexical complexity score': 7.971975810235771}}
+
+tosdr post lead_one (test)
+{'bleu': 2.7320590164498344, 'sari_legacy': 23.469350369986188, 'fkgl': 12.35513811703171, 'quality_estimation': {'Compression ratio': 0.9527923570149385, 'Sentence splits': 1.018181818181818, 'Levenshtein similarity': 0.8474865741251548, 'Exact copies': 0.03636363636363636, 'Additions proportion': 0.2777077672261411, 'Deletions proportion': 0.2048676275048849, 'Lexical complexity score': 7.934489774633379}}
+
+tosdr post random_k (test)
+{'bleu': 2.3721032874137147, 'sari_legacy': 24.09715051754059, 'fkgl': 11.381888119646742, 'quality_estimation': {'Compression ratio': 1.004867934481126, 'Sentence splits': 0.9696969696969697, 'Levenshtein similarity': 0.818943480620715, 'Exact copies': 0.0, 'Additions proportion': 0.3483267704368139, 'Deletions proportion': 0.30288244680188187, 'Lexical complexity score': 7.98189913676638}}
+
+tosdr post text_rank (test)
+{'bleu': 0.9956475827065169, 'sari_legacy': 25.14697285350192, 'fkgl': 7.898140391254319, 'quality_estimation': {'Compression ratio': 1.2966965828985777, 'Sentence splits': 1.0, 'Levenshtein similarity': 0.6850038983208623, 'Exact copies': 0.01818181818181818, 'Additions proportion': 0.7431066200584918, 'Deletions proportion': 0.7268524048737953, 'Lexical complexity score': 7.9452981117579755}}
+
+-------------
+small_billsum (test)
+{'bleu': 5.0526122387512096e-11, 'sari_legacy': 32.32612253465568, 'fkgl': 8.615893246187365, 'quality_estimation': {'Compression ratio': 0.00645722011247587, 'Sentence splits': 0.005087547388558332, 'Levenshtein similarity': 0.009449651851879673, 'Exact copies': 0.0, 'Additions proportion': 0.006358733917226007, 'Deletions proportion': 0.9977786310676375, 'Lexical complexity score': 10.628152096524051}}
+
+small_billsum post bart (test)
+{'bleu': 1.8743324397708594, 'sari_legacy': 39.60958544783641, 'fkgl': 3.351700212132915, 'quality_estimation': {'Compression ratio': 0.9279372625477972, 'Sentence splits': 0.7258084392946299, 'Levenshtein similarity': 0.8181144443783486, 'Exact copies': 0.0, 'Additions proportion': 0.19962801498968902, 'Deletions proportion': 0.2858671705739695, 'Lexical complexity score': 8.203796381812085}}
+
+small_billsum post kl_sum (test)
+{'bleu': 0.9969625384929297, 'sari_legacy': 35.175306224189804, 'fkgl': 13.157828639512697, 'quality_estimation': {'Compression ratio': 0.9454737617548066, 'Sentence splits': 1.1213446665079927, 'Levenshtein similarity': 0.7884676770833379, 'Exact copies': 0.008784773060029283, 'Additions proportion': 0.25603666480401777, 'Deletions proportion': 0.33029162272352, 'Lexical complexity score': 8.31097009644133}}
+
+small_billsum post lead_k (test)
+{'bleu': 3.612008826848658, 'sari_legacy': 38.070703372587246, 'fkgl': 6.302802569989254, 'quality_estimation': {'Compression ratio': 0.546823662677107, 'Sentence splits': 0.32298750266022813, 'Levenshtein similarity': 0.5421577898379871, 'Exact copies': 0.0, 'Additions proportion': 0.2078134482850377, 'Deletions proportion': 0.6556121417491352, 'Lexical complexity score': 8.089392265618544}}
+
+small_billsum post lead_one (test)
+{'bleu': 9.333396219714614e-48, 'sari_legacy': 30.537646337128503, 'fkgl': 7.27488014538168, 'quality_estimation': {'Compression ratio': 0.7801809741434635, 'Sentence splits': 1.0014641288433381, 'Levenshtein similarity': 0.8742284027082993, 'Exact copies': 0.0029282576866764276, 'Additions proportion': 0.004035392657470711, 'Deletions proportion': 0.4970618980375631, 'Lexical complexity score': 6.6758551264729}}
+
+small_billsum post random_k (test)
+{'bleu': 2.664411130948979, 'sari_legacy': 35.68452363249626, 'fkgl': 10.18957747286154, 'quality_estimation': {'Compression ratio': 0.6317795495112192, 'Sentence splits': 0.39910974088436396, 'Levenshtein similarity': 0.5957074109077648, 'Exact copies': 0.0014641288433382138, 'Additions proportion': 0.2045292121168285, 'Deletions proportion': 0.6084396704035316, 'Lexical complexity score': 8.407982838065243}}
+
+small_billsum post text_rank (test)
+{'bleu': 4.245516074590206, 'sari_legacy': 36.36653177834652, 'fkgl': 23.928488609552563, 'quality_estimation': {'Compression ratio': 0.638546989941223, 'Sentence splits': 1.0277037961505575, 'Levenshtein similarity': 0.6023210692749815, 'Exact copies': 0.0, 'Additions proportion': 0.224761848944126, 'Deletions proportion': 0.6176923697000375, 'Lexical complexity score': 8.387674172517505}}

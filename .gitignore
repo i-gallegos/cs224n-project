@@ -6,3 +6,5 @@ data/small_billsum/small_billsum_dev.csv
 data/small_billsum/small_billsum_test.csv
 data/small_billsum/small_billsum.csv
 bart-large-cnn-finetuned
+wandb_token.txt
+wandb/

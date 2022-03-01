@@ -9,6 +9,7 @@ from transformers import Seq2SeqTrainingArguments, Seq2SeqTrainer
 from transformers import TrainerCallback, EarlyStoppingCallback
 from tqdm.notebook import tqdm
 import torch
+import wandb
 from datasets import load_metric, load_dataset
 
 device = torch.cuda.current_device() if torch.cuda.is_available() else 'cpu'
@@ -17,14 +18,20 @@ model_name = "facebook/bart-large-cnn"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 metric = load_metric("rouge")
 
-BATCH_SIZE = 1
+DATASET = 'tldr'
+BATCH_SIZE = 16
 NUM_TRAIN_EPOCHS = 1
 LEARNING_RATE = 2e-5
 WEIGHT_DECAY = 0.01
-MAX_SOURCE_LENGTH = 1024
-MAX_TARGET_LENGTH = 128
+GRAD_ACCUMULATION_STEPS = 4
+SEED = 224
+MAX_SOURCE_LENGTH = 128
+MAX_TARGET_LENGTH = 64
 PADDING = "max_length"
 
+with open("wandb_token.txt", "r") as f:
+    token=f.readlines()[0].rstrip()
+wandb.login(key=token)
 
 class LoggingCallback(TrainerCallback):
     def __init__(self, log_path):
@@ -97,11 +104,13 @@ def train(tokenized_datasets):
         per_device_train_batch_size=BATCH_SIZE,
         per_device_eval_batch_size=BATCH_SIZE,
         weight_decay=WEIGHT_DECAY,
-        save_total_limit=3,
         num_train_epochs=NUM_TRAIN_EPOCHS,
+        gradient_accumulation_steps=GRAD_ACCUMULATION_STEPS,
         predict_with_generate=True,
         load_best_model_at_end=True,
-        seed=224
+        seed=SEED,
+        report_to="wandb",
+        run_name=DATASET+'_batchsize='+str(BATCH_SIZE)+'_lr='+str(LEARNING_RATE)+'_seed='+str(SEED)
     )
 
     data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)
@@ -129,6 +138,8 @@ def train(tokenized_datasets):
         trainer.log_metrics("bart-large-cnn-finetuned/val", val_metrics)
         trainer.save_metrics("bart-large-cnn-finetuned/vali", val_metrics)
 
+    wandb.finish()
+
 def evaluate(test_text):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     finetuned_model = AutoModel.from_pretrained("trainer/checkpoint-24")
@@ -136,10 +147,9 @@ def evaluate(test_text):
 
 
 def main():
-    dataset = 'tldr'
-    train_path = os.path.join('data', dataset, dataset+'_train.csv')
-    dev_path = os.path.join('data', dataset, dataset+'_dev.csv')
-    test_path = os.path.join('data', dataset, dataset+'_test.csv')
+    train_path = os.path.join('data', DATASET, DATASET+'_train.csv')
+    dev_path = os.path.join('data', DATASET, DATASET+'_dev.csv')
+    test_path = os.path.join('data', DATASET, DATASET+'_test.csv')
     raw_datasets = create_datasets(train_path, dev_path, test_path)
     tokenized_datasets = raw_datasets.map(preprocess_function, batched=True)
     train(tokenized_datasets)

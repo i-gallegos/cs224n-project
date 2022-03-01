@@ -2,14 +2,20 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-simplified=False
-name='baseline_simplified_rouge' if simplified else 'baseline_rouge'
+simplified='none'
+
+if simplified=='pre':
+    name='baseline_simplified_rouge'
+elif simplified=='post':
+    name='baseline_simplified_post_rouge'
+else:
+    name='baseline_rouge'
 
 def plot_bar_graph(df, ax, title):
     df = df.pivot_table(index=['baseline'], columns=['dataset'])
     df.plot.bar(rot=0, ax=ax, legend=False, xlabel='')
     ax.set_title(title)
-    ax.set_ylim([0,0.8])
+    ax.set_ylim([0,1])
     return ax
 
 # Load data
@@ -27,8 +33,10 @@ ax3 = plot_bar_graph(rouge_test.drop(columns=['R-1', 'R-2']), ax3, 'R-L')
 fig.supylabel('ROUGE F-1 Score')
 fig.supxlabel('Baseline Method')
 fig.legend(['TLDR', 'TOSDR', 'Billsum'])
-if simplified:
+if simplified=='pre':
     fig.suptitle('Summarization with Simplification Pre-Processing')
+elif simplified=='post':
+    fig.suptitle('Summarization with Simplification Post-Processing')
 else:
     fig.suptitle('Summarization with No Simplification')
 fig.subplots_adjust(hspace=0.4)

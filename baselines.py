@@ -10,8 +10,7 @@ from sumy.nlp.tokenizers import Tokenizer
 from transformers import pipeline
 import evalRouge
 
-# DATASETS = ['tldr', 'tosdr']
-DATASETS = ['small_billsum']
+DATASETS = ['tldr', 'tosdr', 'small_billsum']
 # SPLITS = ['train', 'dev', 'test']
 SPLITS = ['test']
 
@@ -200,19 +199,27 @@ def run_baselines(simplified=False):
             baseline_summaries(dataset, split, filepath, summarizer, simplified)
 
 
-def compute_metrics(simplified=False):
+def compute_metrics(simplified='none'):
     df = pd.DataFrame(columns=['dataset', 'split', 'baseline', 'R-1', 'R-2', 'R-L'])
     for dataset in DATASETS:
-        if simplified:
+        if simplified == 'pre':
             dir =  os.path.join('results', 'baselines', 'simplified', dataset)
+        elif simplified == 'post':
+            dir_sum = os.path.join('access', 'access', 'preds', dataset)
+            dir_ref = os.path.join('results', 'baselines', 'simplified', dataset)
         else:
             dir = os.path.join('results', 'baselines', dataset)
 
         for split in SPLITS:
             for baseline in ['bart', 'kl_sum', 'lead_k', 'lead_one', 'random_k', 'text_rank']:
                 print(f'Computing metrics for {dataset}, {split}, {baseline}')
-                preds = os.path.join(dir, split, baseline+'.txt')
-                true = os.path.join(dir, split, 'ref.txt')
+
+                if simplified == 'post':
+                    preds = os.path.join(dir_sum, 'preds_'+dataset+'_'+split+'_'+baseline)
+                    true = os.path.join(dir_ref, split, 'ref.txt')
+                else:
+                    preds = os.path.join(dir, split, baseline+'.txt')
+                    true = os.path.join(dir, split, 'ref.txt')
 
                 rouge = evalRouge.eval(preds, true)
                 df = pd.concat((df, pd.DataFrame.from_dict({'dataset':dataset,
@@ -222,16 +229,18 @@ def compute_metrics(simplified=False):
                                                             'R-2':[rouge['rouge-2']['f']],
                                                             'R-L':[rouge['rouge-l']['f']]})), ignore_index=True)
 
-    if simplified:
+    if simplified == 'pre':
         save_path = os.path.join('results', 'baselines', 'baseline_simplified_rouge.csv')
+    elif simplified == 'post':
+        save_path = os.path.join('results', 'baselines', 'baseline_simplified_post_rouge.csv')
     else:
         save_path = os.path.join('results', 'baselines', 'baseline_rouge.csv')
 
     df.to_csv(save_path, index=False)
 
 def main():
-    run_baselines(simplified=True)
-    # compute_metrics(simplified=True)
+    # run_baselines(simplified=True)
+    compute_metrics(simplified='post')
 
 
 if __name__ == "__main__":

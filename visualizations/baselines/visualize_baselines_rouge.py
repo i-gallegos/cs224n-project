@@ -2,6 +2,9 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
+simplified=False
+name='baseline_simplified_rouge' if simplified else 'baseline_rouge'
+
 def plot_bar_graph(df, ax, title):
     df = df.pivot_table(index=['baseline'], columns=['dataset'])
     df.plot.bar(rot=0, ax=ax, legend=False, xlabel='')
@@ -10,7 +13,7 @@ def plot_bar_graph(df, ax, title):
     return ax
 
 # Load data
-rouge_path = '../../results/baselines/baseline_simplified_rouge.csv'
+rouge_path = '../../results/baselines/' + name + '.csv'
 rouge = pd.read_csv(rouge_path)
 rouge_test = rouge[rouge['split'] == 'test'].drop(columns=['split'])
 print(rouge_test)
@@ -23,6 +26,10 @@ ax3 = plot_bar_graph(rouge_test.drop(columns=['R-1', 'R-2']), ax3, 'R-L')
 
 fig.supylabel('ROUGE F-1 Score')
 fig.supxlabel('Baseline Method')
-fig.legend(['TLDR', 'TOSDR'])
+fig.legend(['TLDR', 'TOSDR', 'Billsum'])
+if simplified:
+    fig.suptitle('Summarization with Simplification Pre-Processing')
+else:
+    fig.suptitle('Summarization with No Simplification')
 fig.subplots_adjust(hspace=0.4)
-plt.savefig('baseline_simplified_rouge.png')
+plt.savefig(name + '.png')

@@ -10,7 +10,8 @@ from sumy.nlp.tokenizers import Tokenizer
 from transformers import pipeline
 import evalRouge
 
-DATASETS = ['tldr', 'tosdr']
+# DATASETS = ['tldr', 'tosdr']
+DATASETS = ['small_billsum']
 # SPLITS = ['train', 'dev', 'test']
 SPLITS = ['test']
 
@@ -229,8 +230,8 @@ def compute_metrics(simplified=False):
     df.to_csv(save_path, index=False)
 
 def main():
-    # run_baselines(simplified=True)
-    compute_metrics(simplified=True)
+    run_baselines(simplified=True)
+    # compute_metrics(simplified=True)
 
 
 if __name__ == "__main__":

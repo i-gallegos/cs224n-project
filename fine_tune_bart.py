@@ -11,6 +11,28 @@ from tqdm.notebook import tqdm
 import torch
 import wandb
 from datasets import load_metric, load_dataset
+import random
+import argparse
+random.seed(0)
+
+argp = argparse.ArgumentParser()
+argp.add_argument('dataset',
+    help="Dataset",
+    choices=["tldr", "tosdr", "small_billsum"])
+argp.add_argument('lr',
+    help="Learning rate",
+    choices=['0.00001', '0.00002', '0.00003'])
+argp.add_argument('seed',
+    help="Seed",
+    choices=['224', '161'])
+argp.add_argument('--batch_size',
+    help="Batch size", default=32)
+argp.add_argument('--grad_accumulation_steps',
+    help="Grad accumulation steps", default=4)
+argp.add_argument('--train_on_full_dataset',
+    help="Train on full dataset", default=False)
+args = argp.parse_args()
+
 
 device = torch.cuda.current_device() if torch.cuda.is_available() else 'cpu'
 
@@ -18,14 +40,15 @@ model_name = "facebook/bart-large-cnn"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 metric = load_metric("rouge")
 
-TRAIN_ON_FULL_DATASET = True # when TRAIN_ON_FULL_DATASET=True: training data = 'train_and_dev; validation data = 'test'
-DATASET = 'tldr'
-BATCH_SIZE = 16
-NUM_TRAIN_EPOCHS = 1
-LEARNING_RATE = 2e-5
+TRAIN_ON_FULL_DATASET = args.train_on_full_dataset # when TRAIN_ON_FULL_DATASET=True: training data = 'train_and_dev; validation data = 'test'
+DATASET = args.dataset
+BATCH_SIZE = int(args.batch_size)
+LEARNING_RATE = float(args.lr)
+GRAD_ACCUMULATION_STEPS = int(args.grad_accumulation_steps)
+SEED = int(args.seed)
+
+NUM_TRAIN_EPOCHS = 3
 WEIGHT_DECAY = 0.01
-GRAD_ACCUMULATION_STEPS = 4
-SEED = 224
 MAX_SOURCE_LENGTH = 128
 MAX_TARGET_LENGTH = 64
 PADDING = "max_length"

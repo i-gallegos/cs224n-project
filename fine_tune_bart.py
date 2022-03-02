@@ -47,7 +47,7 @@ LEARNING_RATE = float(args.lr)
 GRAD_ACCUMULATION_STEPS = int(args.grad_accumulation_steps)
 SEED = int(args.seed)
 
-NUM_TRAIN_EPOCHS = 3
+NUM_TRAIN_EPOCHS = 4
 WEIGHT_DECAY = 0.01
 MAX_SOURCE_LENGTH = 128
 MAX_TARGET_LENGTH = 64
@@ -151,7 +151,7 @@ def train(tokenized_datasets):
       compute_metrics=compute_metrics
     )
     trainer.add_callback(EarlyStoppingCallback(early_stopping_patience=1, early_stopping_threshold=0.0))
-    trainer.add_callback(LoggingCallback("bart-large-cnn-finetuned/"+name+".json"))
+    trainer.add_callback(LoggingCallback("results/"+name+".json"))
     trainer.train()
     trainer.save_model()
 

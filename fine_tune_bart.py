@@ -18,6 +18,7 @@ model_name = "facebook/bart-large-cnn"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 metric = load_metric("rouge")
 
+TRAIN_ON_FULL_DATASET = True # when TRAIN_ON_FULL_DATASET=True: training data = 'train_and_dev; validation data = 'test'
 DATASET = 'tldr'
 BATCH_SIZE = 16
 NUM_TRAIN_EPOCHS = 1
@@ -119,7 +120,7 @@ def train(tokenized_datasets):
     trainer = Seq2SeqTrainer(
       model,
       args,
-      train_dataset=tokenized_datasets["validation"], #TODO
+      train_dataset=tokenized_datasets["train"],
       eval_dataset=tokenized_datasets["validation"],
       data_collator=data_collator,
       tokenizer=tokenizer,
@@ -140,16 +141,22 @@ def train(tokenized_datasets):
 
     wandb.finish()
 
-def evaluate(test_text):
+def evaluate(test_text): # TODO: do not use as is
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     finetuned_model = AutoModel.from_pretrained("trainer/checkpoint-24")
     model_inputs = tokenizer(test_text, return_tensors="pt")
 
 
 def main():
-    train_path = os.path.join('data', DATASET, DATASET+'_train.csv')
-    dev_path = os.path.join('data', DATASET, DATASET+'_dev.csv')
-    test_path = os.path.join('data', DATASET, DATASET+'_test.csv')
+    if not TRAIN_ON_FULL_DATASET:
+        train_path = os.path.join('data', DATASET, DATASET+'_train.csv')
+        dev_path = os.path.join('data', DATASET, DATASET+'_dev.csv')
+        test_path = os.path.join('data', DATASET, DATASET+'_test.csv')
+    else:
+        train_path = os.path.join('data', DATASET, DATASET+'_train_and_dev.csv')
+        dev_path = os.path.join('data', DATASET, DATASET+'_test.csv')
+        test_path = os.path.join('data', DATASET, DATASET+'_test.csv')
+
     raw_datasets = create_datasets(train_path, dev_path, test_path)
     tokenized_datasets = raw_datasets.map(preprocess_function, batched=True)
     train(tokenized_datasets)

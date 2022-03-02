@@ -118,7 +118,7 @@ def compute_metrics(eval_pred):
 def train(tokenized_datasets):
     # Load model
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
-    name = DATASET+'_batchsize='+str(BATCH_SIZE)+'_lr='+str(LEARNING_RATE)+'_seed='+str(SEED)
+    name = DATASET+'_batchsize='+str(BATCH_SIZE)+'_lr='+str(LEARNING_RATE)+'_seed='+str(SEED)+'_full_dataset='+str(TRAIN_ON_FULL_DATASET)
 
     # Fine-tuning parameters
     args = Seq2SeqTrainingArguments(

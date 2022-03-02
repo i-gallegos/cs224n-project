@@ -131,13 +131,13 @@ def train(tokenized_datasets):
     trainer.train()
     trainer.save_model()
 
-    with torch.no_grad():
-        train_metrics = trainer.predict(tokenized_datasets["train"]).metrics
-        val_metrics = trainer.predict(tokenized_datasets["validation"]).metrics
-        trainer.log_metrics("bart-large-cnn-finetuned/train", train_metrics)
-        trainer.save_metrics("bart-large-cnn-finetuned/train", train_metrics)
-        trainer.log_metrics("bart-large-cnn-finetuned/val", val_metrics)
-        trainer.save_metrics("bart-large-cnn-finetuned/vali", val_metrics)
+    # with torch.no_grad():
+    #     train_metrics = trainer.predict(tokenized_datasets["train"]).metrics
+    #     val_metrics = trainer.predict(tokenized_datasets["validation"]).metrics
+    #     trainer.log_metrics("bart-large-cnn-finetuned/train", train_metrics)
+    #     trainer.save_metrics("bart-large-cnn-finetuned/train", train_metrics)
+    #     trainer.log_metrics("bart-large-cnn-finetuned/val", val_metrics)
+    #     trainer.save_metrics("bart-large-cnn-finetuned/val", val_metrics)
 
     wandb.finish()
 

@@ -57,6 +57,8 @@ with open("wandb_token.txt", "r") as f:
     token=f.readlines()[0].rstrip()
 wandb.login(key=token)
 
+torch.cuda.empty_cache()
+
 class LoggingCallback(TrainerCallback):
     def __init__(self, log_path):
         self.log_path = log_path
@@ -135,7 +137,8 @@ def train(tokenized_datasets):
         load_best_model_at_end=True,
         seed=SEED,
         report_to="wandb",
-        run_name=name
+        run_name=name,
+        save_total_limit=1
     )
 
     data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)

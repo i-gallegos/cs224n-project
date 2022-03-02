@@ -118,10 +118,11 @@ def compute_metrics(eval_pred):
 def train(tokenized_datasets):
     # Load model
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
+    name = DATASET+'_batchsize='+str(BATCH_SIZE)+'_lr='+str(LEARNING_RATE)+'_seed='+str(SEED)
 
     # Fine-tuning parameters
     args = Seq2SeqTrainingArguments(
-        "bart-large-cnn-finetuned",
+        "bart-large-cnn-finetuned/"+name,
         evaluation_strategy = "epoch",
         save_strategy="epoch",
         learning_rate=LEARNING_RATE,
@@ -134,7 +135,7 @@ def train(tokenized_datasets):
         load_best_model_at_end=True,
         seed=SEED,
         report_to="wandb",
-        run_name=DATASET+'_batchsize='+str(BATCH_SIZE)+'_lr='+str(LEARNING_RATE)+'_seed='+str(SEED)
+        run_name=name
     )
 
     data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)
@@ -150,7 +151,7 @@ def train(tokenized_datasets):
       compute_metrics=compute_metrics
     )
     trainer.add_callback(EarlyStoppingCallback(early_stopping_patience=1, early_stopping_threshold=0.0))
-    trainer.add_callback(LoggingCallback("bart-large-cnn-finetuned/log.json"))
+    trainer.add_callback(LoggingCallback("bart-large-cnn-finetuned/"+name+".json"))
     trainer.train()
     trainer.save_model()
 

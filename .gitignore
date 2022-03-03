@@ -1,7 +1,6 @@
 data/.ipynb_checkpoints/
 __pycache__
 data/billsum
-data/small_billsum/small_billsum.csv
 bart-large-cnn-finetuned
 wandb_token.txt
 wandb/

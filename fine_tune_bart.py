@@ -168,11 +168,6 @@ def train(tokenized_datasets):
 
     wandb.finish()
 
-def evaluate(test_text): # TODO: do not use as is
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    finetuned_model = AutoModel.from_pretrained("trainer/checkpoint-24")
-    model_inputs = tokenizer(test_text, return_tensors="pt")
-
 
 def main():
     if not TRAIN_ON_FULL_DATASET:
@@ -186,6 +181,7 @@ def main():
 
     raw_datasets = create_datasets(train_path, dev_path, test_path)
     tokenized_datasets = raw_datasets.map(preprocess_function, batched=True)
+
     train(tokenized_datasets)
 
 if __name__ == "__main__":

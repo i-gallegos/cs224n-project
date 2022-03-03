@@ -47,7 +47,7 @@ LEARNING_RATE = float(args.lr)
 GRAD_ACCUMULATION_STEPS = int(args.grad_accumulation_steps)
 SEED = int(args.seed)
 
-NUM_TRAIN_EPOCHS = 3
+NUM_TRAIN_EPOCHS = 4
 WEIGHT_DECAY = 0.01
 MAX_SOURCE_LENGTH = 128
 MAX_TARGET_LENGTH = 64
@@ -56,6 +56,8 @@ PADDING = "max_length"
 with open("wandb_token.txt", "r") as f:
     token=f.readlines()[0].rstrip()
 wandb.login(key=token)
+
+torch.cuda.empty_cache()
 
 class LoggingCallback(TrainerCallback):
     def __init__(self, log_path):
@@ -118,7 +120,7 @@ def compute_metrics(eval_pred):
 def train(tokenized_datasets):
     # Load model
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
-    name = DATASET+'_batchsize='+str(BATCH_SIZE)+'_lr='+str(LEARNING_RATE)+'_seed='+str(SEED)
+    name = DATASET+'_batchsize'+str(BATCH_SIZE)+'_lr'+str(LEARNING_RATE)+'_seed'+str(SEED)+'_full_dataset'+str(TRAIN_ON_FULL_DATASET)
 
     # Fine-tuning parameters
     args = Seq2SeqTrainingArguments(
@@ -135,7 +137,8 @@ def train(tokenized_datasets):
         load_best_model_at_end=True,
         seed=SEED,
         report_to="wandb",
-        run_name=name
+        run_name=name,
+        save_total_limit=1
     )
 
     data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)
@@ -151,7 +154,7 @@ def train(tokenized_datasets):
       compute_metrics=compute_metrics
     )
     trainer.add_callback(EarlyStoppingCallback(early_stopping_patience=1, early_stopping_threshold=0.0))
-    trainer.add_callback(LoggingCallback("bart-large-cnn-finetuned/"+name+".json"))
+    trainer.add_callback(LoggingCallback("results/"+name+".json"))
     trainer.train()
     trainer.save_model()
 
@@ -164,11 +167,6 @@ def train(tokenized_datasets):
     #     trainer.save_metrics("bart-large-cnn-finetuned/val", val_metrics)
 
     wandb.finish()
-
-def evaluate(test_text): # TODO: do not use as is
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    finetuned_model = AutoModel.from_pretrained("trainer/checkpoint-24")
-    model_inputs = tokenizer(test_text, return_tensors="pt")
 
 
 def main():
@@ -183,6 +181,7 @@ def main():
 
     raw_datasets = create_datasets(train_path, dev_path, test_path)
     tokenized_datasets = raw_datasets.map(preprocess_function, batched=True)
+
     train(tokenized_datasets)
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from transformers import pipeline
+from transformers import pipeline, AutoTokenizer
 import pandas as pd
 import random
 import argparse
@@ -13,7 +13,9 @@ argp.add_argument('--ref_file', help="data/<dataset>/<name>.txt", default=None)
 argp.add_argument('--result_file', help="results/<experiment>/rouge_<dataset>.csv", default=None)
 args = argp.parse_args()
 
+MAX_SOURCE_LENGTH = 128
 MAX_TARGET_LENGTH = 64
+PADDING = "max_length"
 
 def test_file_to_documents():
     df = pd.read_csv(args.test_file)
@@ -22,6 +24,7 @@ def test_file_to_documents():
 
 def evaluate():
     inputs = test_file_to_documents()
+    tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn", model_max_length=MAX_SOURCE_LENGTH, padding=PADDING, truncation=True)
     summarizer = pipeline("summarization", model=args.model_path, config=(args.model_path+"/config.json"))
     outputs = summarizer(inputs, max_length=MAX_TARGET_LENGTH, do_sample=False)
     outputs = [output['summary_text'] for output in outputs]

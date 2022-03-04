@@ -11,7 +11,6 @@ os.system(f"python evaluate_bart.py bart-large-cnn-finetuned/{checkpoint}/ \
             --ref_file data/reference/reference_{dataset}_test.txt \
             --result_file results/{experiment}/rouge_{name}.csv")
 
-'''
 dataset = 'tosdr'
 name = 'tosdr_test'
 checkpoint = 'tosdr_lr3e-05_seed161_full_datasetFalse/checkpoint-8'
@@ -29,4 +28,3 @@ os.system(f"python evaluate_bart.py bart-large-cnn-finetuned/{checkpoint}/ \
             --out_file results/{experiment}/preds_{name}.txt \
             --ref_file data/reference/reference_{dataset}_test.txt \
             --result_file results/{experiment}/rouge_{name}.csv")
-'''

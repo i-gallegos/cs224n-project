@@ -21,8 +21,8 @@ def test_file_to_documents():
     return document
 
 def evaluate():
-    summarizer = pipeline("summarization", model=args.model_path)
     inputs = test_file_to_documents()
+    summarizer = pipeline("summarization", model=args.model_path, config=(args.model_path+"/config.json"))
     outputs = summarizer(inputs, max_length=MAX_TARGET_LENGTH, do_sample=False)
     outputs = [output['summary_text'] for output in outputs]
 

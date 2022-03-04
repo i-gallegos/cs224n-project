@@ -7,10 +7,10 @@ random.seed(0)
 
 argp = argparse.ArgumentParser()
 argp.add_argument('model_path', help="bart-large-cnn-finetuned/<model-checkpoint>/")
-argp.add_argument('test_file', help="data/<dataset>/<name>.csv")
-argp.add_argument('out_file', help="results/<experiment>/preds_<dataset>.csv")
-argp.add_argument('ref_file', help="data/<dataset>/<name>.csv")
-argp.add_argument('result_file', help="results/<experiment>/rouge_<dataset>.csv")
+argp.add_argument('--test_file', help="data/<dataset>/<name>.csv", default=None)
+argp.add_argument('--out_file', help="results/<experiment>/preds_<dataset>.txt", default=None)
+argp.add_argument('--ref_file', help="data/<dataset>/<name>.txt", default=None)
+argp.add_argument('--result_file', help="results/<experiment>/rouge_<dataset>.csv", default=None)
 args = argp.parse_args()
 
 MAX_TARGET_LENGTH = 64

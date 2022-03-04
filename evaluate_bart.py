@@ -28,7 +28,7 @@ def test_file_to_documents():
 def evaluate():
     inputs = test_file_to_documents()
     tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn", model_max_length=MAX_SOURCE_LENGTH, padding=PADDING, truncation=True)
-    summarizer = pipeline("summarization", model=args.model_path, config=(args.model_path+"/config.json"))
+    summarizer = pipeline("summarization", model=args.model_path, config=(args.model_path+"/config.json"), device=0)
     outputs = summarizer(inputs, max_length=MAX_TARGET_LENGTH, do_sample=False)
     outputs = [output['summary_text'] for output in outputs]
 

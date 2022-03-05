@@ -221,7 +221,10 @@ def compute_metrics(simplified='none'):
                     preds = os.path.join(dir, split, baseline+'.txt')
                     true = os.path.join(dir, split, 'ref.txt')
 
+                print(preds, true)
+
                 rouge = evalRouge.eval(preds, true)
+                print(rouge['rouge-1']['f'], rouge['rouge-2']['f'], rouge['rouge-l']['f'])
                 df = pd.concat((df, pd.DataFrame.from_dict({'dataset':dataset,
                                                             'split':split,
                                                             'baseline':baseline,
@@ -239,8 +242,8 @@ def compute_metrics(simplified='none'):
     df.to_csv(save_path, index=False)
 
 def main():
-    run_baselines(simplified='pre')
-    compute_metrics(simplified='pre')
+    # run_baselines(simplified='pre')
+    compute_metrics(simplified='post')
 
 
 if __name__ == "__main__":

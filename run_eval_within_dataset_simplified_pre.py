@@ -1,6 +1,6 @@
 import os
 
-experiment = 'within_dataset'
+experiment = 'pre_simplified'
 
 dataset = 'tldr'
 name = 'tldr_test'

@@ -22,7 +22,7 @@ def test_file_to_documents():
     document = df['document'].tolist()
 
     # Truncate for BART model
-    # document = [(' ').join(d.split()[:512]) for d in document]
+    document = [(' ').join(d.split()[:512]) for d in document]
     return document
 
 def evaluate():

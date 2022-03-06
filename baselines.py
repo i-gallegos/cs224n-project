@@ -242,7 +242,7 @@ def compute_metrics(simplified='none'):
     df.to_csv(save_path, index=False)
 
 def main():
-    run_baselines(simplified='none')
+    # run_baselines(simplified='none')
     compute_metrics(simplified='none')
 
 

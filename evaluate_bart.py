@@ -45,13 +45,9 @@ def compute_rouge():
     rouge = evalRouge.eval(preds, true)
     df = pd.DataFrame.from_dict({'R-1':[rouge['rouge-1']['f']],
                                  'R-2':[rouge['rouge-2']['f']],
-<<<<<<< HEAD
-                                 'R-L':[rouge['rouge-l']['f']]}, ignore_index=True)
-=======
                                  'R-L':[rouge['rouge-l']['f']]})
 
     df.to_csv(args.result_file, index=False)
->>>>>>> c8e185e2e642432b5081bd429782f64986f7fb8d
 
 def main():
     evaluate()

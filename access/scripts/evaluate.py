@@ -55,4 +55,5 @@ if __name__ == '__main__':
     for dataset in datasets:
         print(f'{dataset} (post summarization)')
         print(evaluate_simplifier_on_law(dataset, simplifier, phase='test'))
+
     

@@ -81,3 +81,12 @@ small_billsum post random_k (test)
 {'bleu': 1.9658154062770181, 'sari_legacy': 35.77547578115652, 'fkgl': 10.979713882991458, 'quality_estimation': {'Compression ratio': 0.6288681729637734, 'Sentence splits': 0.3812498861222158, 'Levenshtein similarity': 0.5828478585366454, 'Exact copies': 0.009900990099009901, 'Additions proportion': 0.22047391104195033, 'Deletions proportion': 0.6229150830891831, 'Lexical complexity score': 8.291321995010595}}
 small_billsum post text_rank (test)
 {'bleu': 3.471772628545888, 'sari_legacy': 36.278125708805916, 'fkgl': 24.294880161361252, 'quality_estimation': {'Compression ratio': 0.5711242910210794, 'Sentence splits': 1.0104337576614804, 'Levenshtein similarity': 0.5666299253329466, 'Exact copies': 0.0, 'Additions proportion': 0.20641799176754805, 'Deletions proportion': 0.6483549218670657, 'Lexical complexity score': 8.367813952096174}}
+
+----------
+preds for within dataset
+tldr (post summarization)
+{'bleu': 0.6024579809320401, 'sari_legacy': 21.571300137617214, 'fkgl': 16.514956779770355, 'quality_estimation': {'Compression ratio': 0.899759693045917, 'Sentence splits': 0.5294871794871795, 'Levenshtein similarity': 0.8859971065561951, 'Exact copies': 0.0, 'Additions proportion': 0.14818375850992285, 'Deletions proportion': 0.208718638381342, 'Lexical complexity score': 8.636420802478556}}
+tosdr (post summarization)
+{'bleu': 0.9463715327495974, 'sari_legacy': 26.059060966035542, 'fkgl': 16.61567051451188, 'quality_estimation': {'Compression ratio': 0.8781049126954478, 'Sentence splits': 0.25245864980314736, 'Levenshtein similarity': 0.7957551526131599, 'Exact copies': 0.0, 'Additions proportion': 0.27261192891076697, 'Deletions proportion': 0.3627102644255061, 'Lexical complexity score': 7.815208381802891}}
+small_billsum (post summarization)
+{'bleu': 4.140155242083353, 'sari_legacy': 37.323048444728094, 'fkgl': 18.46385863896946, 'quality_estimation': {'Compression ratio': 0.9482514192184791, 'Sentence splits': 0.8406176331918911, 'Levenshtein similarity': 0.8538220773680669, 'Exact copies': 0.0, 'Additions proportion': 0.19300508673751657, 'Deletions proportion': 0.23822682556656086, 'Lexical complexity score': 8.319403854078448}}

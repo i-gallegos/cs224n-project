@@ -43,8 +43,6 @@ def get_filepaths_dict(dataset):
 def read_csv(csv_file, dataset, phase):
     with open(csv_file, 'r') as input_file:
         col_list = ['document', 'summary']
-        if dataset == 'small_billsum':
-            col_list = ['Unnamed: 0', 'document', 'summary']
         df = pd.read_csv(input_file, usecols=col_list)
 
     # create files with data from csv

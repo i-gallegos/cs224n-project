@@ -90,3 +90,6 @@ tosdr (post summarization)
 {'bleu': 0.9463715327495974, 'sari_legacy': 26.059060966035542, 'fkgl': 16.61567051451188, 'quality_estimation': {'Compression ratio': 0.8781049126954478, 'Sentence splits': 0.25245864980314736, 'Levenshtein similarity': 0.7957551526131599, 'Exact copies': 0.0, 'Additions proportion': 0.27261192891076697, 'Deletions proportion': 0.3627102644255061, 'Lexical complexity score': 7.815208381802891}}
 small_billsum (post summarization)
 {'bleu': 4.140155242083353, 'sari_legacy': 37.323048444728094, 'fkgl': 18.46385863896946, 'quality_estimation': {'Compression ratio': 0.9482514192184791, 'Sentence splits': 0.8406176331918911, 'Levenshtein similarity': 0.8538220773680669, 'Exact copies': 0.0, 'Additions proportion': 0.19300508673751657, 'Deletions proportion': 0.23822682556656086, 'Lexical complexity score': 8.319403854078448}}
+
+billsum (test)
+{'bleu': 8.062316292528918e-13, 'sari_legacy': 32.24276150610495, 'fkgl': 14.429730612965908, 'quality_estimation': {'Compression ratio': 0.00613069148032931, 'Sentence splits': 0.002872555587443217, 'Levenshtein similarity': 0.008903165028097538, 'Exact copies': 0.0, 'Additions proportion': 0.00645016758550367, 'Deletions proportion': 0.9979342697146631, 'Lexical complexity score': 10.596660427035916}}

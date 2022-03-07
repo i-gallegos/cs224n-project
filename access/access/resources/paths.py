@@ -92,5 +92,5 @@ def get_post_filepath(dataset, phase, sum_model):
 def get_pre_summarization(dataset):
     cur_path = os.getcwd()
     dataset_path = f'{cur_path}/../results/within_dataset/preds_{dataset}_test.txt'
-    reference_path = f'{cur_path}/../data/reference/referece_{dataset}_test.txt'
+    reference_path = f'{cur_path}/../data/reference/reference_{dataset}_test.txt'
     return dataset_path, reference_path

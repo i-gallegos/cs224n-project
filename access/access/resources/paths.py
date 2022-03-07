@@ -68,11 +68,12 @@ def get_law_filepath(dataset, phase):
     filename = f'{dataset_path}/{dataset}_{phase}.csv'
     return read_csv(filename, dataset, phase)
 
+# edited for post summary
 def get_pred_filepath(dataset, phase):
     cur_path = os.getcwd() 
-    pred_file = open(f'{cur_path}/access/preds/preds_{dataset}_{phase}', 'w')
+    pred_file = open(f'{cur_path}/access/preds/post_summarized/preds_{dataset}_{phase}_postsum', 'w')
     pred_file.close()
-    pred_filepath = f'{cur_path}/access/preds/preds_{dataset}_{phase}'
+    pred_filepath = f'{cur_path}/access/preds/post_summarized/preds_{dataset}_{phase}_postsum'
     return pred_filepath
 
 def get_pred_filepath_post(dataset, phase, sum_model):
@@ -87,4 +88,9 @@ def get_post_filepath(dataset, phase, sum_model):
     dataset_path = f'{cur_path}/../results/baselines/{dataset}/{phase}'
     return f'{dataset_path}/{sum_model}.txt', f'reference_{dataset}_{phase}.txt'
 
-
+# 
+def get_pre_summarization(dataset):
+    cur_path = os.getcwd()
+    dataset_path = f'{cur_path}/../results/within_dataset/preds_{dataset}_test.txt'
+    reference_path = f'{cur_path}/../data/reference/referece_{dataset}_test.txt'
+    return dataset_path, reference_path

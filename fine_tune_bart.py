@@ -18,7 +18,7 @@ random.seed(0)
 argp = argparse.ArgumentParser()
 argp.add_argument('dataset',
     help="Dataset",
-    choices=["tldr", "tosdr", "small_billsum"])
+    choices=["tldr", "tosdr", "small_billsum", "tiny_billsum"])
 argp.add_argument('lr',
     help="Learning rate",
     choices=['0.00001', '0.00002', '0.00003'])

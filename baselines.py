@@ -140,7 +140,7 @@ def baseline_summaries(dataset, split, filepath, summarizer, simplified):
     # avg_summary_len should be average number of words among all summaries
     avg_summary_len = int(df['summary'].str.split().apply(len).mean())
 
-    if simplified:
+    if simplified == 'pre':
         out_dir = os.path.join('results', 'baselines', 'simplified', dataset, split)
     else:
         out_dir = os.path.join('results', 'baselines', dataset, split)
@@ -184,14 +184,14 @@ def baseline_summaries(dataset, split, filepath, summarizer, simplified):
     fo_ref.close()
 
 
-def run_baselines(simplified=False):
+def run_baselines(simplified='none'):
     summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=0) # for GPU
     # summarizer = None
 
     for dataset in DATASETS:
         dir =  os.path.join('data', dataset)
         for split in SPLITS:
-            if simplified:
+            if simplified == 'pre':
                 filepath = os.path.join(dir, dataset+'_'+split+'_simplified.csv')
             else:
                 filepath = os.path.join(dir, dataset+'_'+split+'.csv')
@@ -221,7 +221,10 @@ def compute_metrics(simplified='none'):
                     preds = os.path.join(dir, split, baseline+'.txt')
                     true = os.path.join(dir, split, 'ref.txt')
 
+                print(preds, true)
+
                 rouge = evalRouge.eval(preds, true)
+                print(rouge['rouge-1']['f'], rouge['rouge-2']['f'], rouge['rouge-l']['f'])
                 df = pd.concat((df, pd.DataFrame.from_dict({'dataset':dataset,
                                                             'split':split,
                                                             'baseline':baseline,
@@ -239,8 +242,8 @@ def compute_metrics(simplified='none'):
     df.to_csv(save_path, index=False)
 
 def main():
-    # run_baselines(simplified=True)
-    compute_metrics(simplified='post')
+    # run_baselines(simplified='none')
+    compute_metrics(simplified='none')
 
 
 if __name__ == "__main__":

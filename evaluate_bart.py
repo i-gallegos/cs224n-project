@@ -50,7 +50,7 @@ def compute_rouge():
     df.to_csv(args.result_file, index=False)
 
 def main():
-    # evaluate()
+    evaluate()
     compute_rouge()
 
 if __name__ == "__main__":

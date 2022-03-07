@@ -42,6 +42,7 @@ if __name__ == '__main__':
     #print(evaluate_simplifier_on_law('tosdr', simplifier, phase='test'))
     #print("billsum (test)")
     #print(evaluate_simplifier_on_law('small_billsum', simplifier, phase='test'))
+    '''
     summary_models =['bart', 'kl_sum', 'lead_k', 'lead_one', 'random_k', 'text_rank']
     datasets = ['small_billsum']
     print('redo baselines for small_billsum')
@@ -49,6 +50,8 @@ if __name__ == '__main__':
         for m in summary_models:
             print(f'{d} post {m} (test)')
             print(evaluate_simplifier_on_law_post(d, simplifier, phase='test', sum_model=m))
+
+    '''
 
     print("preds for within dataset")
     datasets = ['tldr', 'tosdr', 'small_billsum']

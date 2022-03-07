@@ -51,5 +51,8 @@ if __name__ == '__main__':
             print(evaluate_simplifier_on_law_post(d, simplifier, phase='test', sum_model=m))
 
     print("preds for within dataset")
-    print(evaluate_simplifier_on_law('within dataset', simplifier, phase='test'))
+    datasets = ['tldr', 'tosdr', 'small_billsum']
+    for dataset in datasets:
+        print(f'{dataset} (post summarization)')
+        print(evaluate_simplifier_on_law(dataset, simplifier, phase='test'))
     

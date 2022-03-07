@@ -140,7 +140,7 @@ def baseline_summaries(dataset, split, filepath, summarizer, simplified):
     # avg_summary_len should be average number of words among all summaries
     avg_summary_len = int(df['summary'].str.split().apply(len).mean())
 
-    if simplified:
+    if simplified == 'pre':
         out_dir = os.path.join('results', 'baselines', 'simplified', dataset, split)
     else:
         out_dir = os.path.join('results', 'baselines', dataset, split)
@@ -242,8 +242,8 @@ def compute_metrics(simplified='none'):
     df.to_csv(save_path, index=False)
 
 def main():
-    # run_baselines(simplified='pre')
-    compute_metrics(simplified='post')
+    # run_baselines(simplified='none')
+    compute_metrics(simplified='none')
 
 
 if __name__ == "__main__":

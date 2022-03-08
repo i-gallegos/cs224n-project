@@ -242,8 +242,8 @@ def compute_metrics(simplified='none'):
     df.to_csv(save_path, index=False)
 
 def main():
-    # run_baselines(simplified='none')
-    compute_metrics(simplified='post')
+    run_baselines(simplified='pre')
+    compute_metrics(simplified='pre')
 
 
 if __name__ == "__main__":

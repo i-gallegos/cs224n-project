@@ -65,6 +65,7 @@ def get_law_filepath(dataset, phase):
     #dataset_path = f'{cur_path}'
     #filename = f'{dataset_path}/{dataset}_{phase}.csv'
     #return read_csv(filename, dataset, phase)
+    print(cur_path)
     return f'{cur_path}/original_{dataset}_{phase}.txt', f'{cur_path}/reference_{dataset}_{phase}.txt'
 
 

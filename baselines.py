@@ -67,7 +67,7 @@ def kl_sum(text, avg_summary_len):
             summary = new_summary
 
     if len(summary) == 0:
-        summary += 'none'
+        summary = 'none'
     return (' ').join([str(sentence) for sentence in summary])
 
 

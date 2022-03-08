@@ -8,8 +8,8 @@ random.seed(0)
 
 dir = '..\\..\\access\\access\\preds\\post_summarized\\'
 
-for dataset in ['tosdr']: # tldr, small_billsum
-    out_file = dir+'preds_'+dataset+'_test_postsum'
+for dataset in ['tldr', 'tosdr', 'small_billsum']:
+    out_file = dir+'preds_'+dataset+'_test.txt'
     ref_file = '..\\..\\data\\reference\\reference_'+dataset+'_test.txt'
     result_file = 'rouge_'+dataset+'_test.csv'
 

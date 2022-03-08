@@ -49,7 +49,7 @@ def read_csv(csv_file, dataset, phase):
     with open(f'original_{dataset}_{phase}.txt', "w") as orig_file:
         for row in df['document']:
             #row = row.replace("\n", "")
-            orig_file.write("".join(row[:(len(row)//4)])+'\n')
+            orig_file.write("".join(row[:(len(row)//10)])+'\n')
         orig_file.close()
 
     with open(f'reference_{dataset}_{phase}.txt', "w") as ref_file:

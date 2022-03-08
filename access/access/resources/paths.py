@@ -62,10 +62,10 @@ def read_csv(csv_file, dataset, phase):
 # be in cs224n-project/access
 def get_law_filepath(dataset, phase):
     cur_path = os.getcwd() 
-    dataset_path = f'{cur_path}/{dataset}'
+    #dataset_path = f'{cur_path}'
     #filename = f'{dataset_path}/{dataset}_{phase}.csv'
     #return read_csv(filename, dataset, phase)
-    return f'{cur_path}/original_small_billsum_test.txt', f'{cur_path}/reference_small_billsum_test.txt'
+    return f'{cur_path}/original_{dataset}_{phase}.txt', f'{cur_path}/reference_{dataset}_{phase}.txt'
 
 
 def get_pred_filepath(dataset, phase):

@@ -254,6 +254,7 @@ def _fairseq_generate(complex_filepath,
         if len(hypotheses) == 0:
             predictions.append('')
         else:
+            print(hypotheses[hypothesis_num - 1])
             predictions.append(hypotheses[hypothesis_num - 1])
     #predictions = [hypotheses[hypothesis_num - 1] for hypotheses in all_hypotheses]
     write_lines(predictions, output_pred_filepath)

@@ -13,7 +13,8 @@ sys.path.append(access_dir)
 from easse.cli import evaluate_system_output
 
 from access.preprocess import lowercase_file, to_lrb_rrb_file
-from access.resources.paths import get_data_filepath, get_law_filepath, get_pred_filepath, get_post_filepath, get_pred_filepath_post, get_pre_summarization
+from access.resources.paths import get_data_filepath, get_law_filepath, get_pred_filepath
+#, get_post_filepath, get_pred_filepath_post, get_pre_summarization
 from access.utils.helpers import mute, get_temp_filepath
 
 '''A simplifier is a method with signature: simplifier(complex_filepath, output_pred_filepath)'''

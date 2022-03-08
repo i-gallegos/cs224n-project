@@ -62,23 +62,25 @@ def read_csv(csv_file, dataset, phase):
 # be in cs224n-project/access
 def get_law_filepath(dataset, phase):
     cur_path = os.getcwd() 
-    dataset_path = f'{cur_path}/../data/{dataset}'
-    filename = f'{dataset_path}/{dataset}_{phase}.csv'
-    return read_csv(filename, dataset, phase)
+    dataset_path = f'{cur_path}/{dataset}'
+    #filename = f'{dataset_path}/{dataset}_{phase}.csv'
+    #return read_csv(filename, dataset, phase)
+    return f'{cur_path}/original_small_billsum_test.txt', f'{cur_path}/reference_small_billsum_test.txt'
 
-# edited for post summary
+
 def get_pred_filepath(dataset, phase):
     cur_path = os.getcwd() 
-    pred_file = open(f'{cur_path}/access/preds/post_summarized/preds_{dataset}_{phase}.txt', 'w')
+    pred_file = open(f'{cur_path}/access/preds/{dataset}/preds_{dataset}_{phase}.txt', 'w')
     pred_file.close()
-    pred_filepath = f'{cur_path}/access/preds/post_summarized/preds_{dataset}_{phase}.txt'
+    pred_filepath = f'{cur_path}/access/preds/{dataset}/preds_{dataset}_{phase}.txt'
     return pred_filepath
 
+# edited for post summary
 def get_pred_filepath_post(dataset, phase, sum_model):
     cur_path = os.getcwd() 
-    pred_file = open(f'{cur_path}/access/preds/preds_{dataset}_{phase}_{sum_model}', 'w')
+    pred_file = open(f'{cur_path}/access/preds/post_summarized/preds_{dataset}_{phase}_{sum_model}', 'w')
     pred_file.close()
-    pred_filepath = f'{cur_path}/access/preds/preds_{dataset}_{phase}_{sum_model}'
+    pred_filepath = f'{cur_path}/access/preds/post_summarized/preds_{dataset}_{phase}_{sum_model}'
     return pred_filepath
 
 def get_post_filepath(dataset, phase, sum_model):

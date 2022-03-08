@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-simplified='none'
+simplified='post'
 
 if simplified=='pre':
     name='baseline_simplified_rouge'

@@ -206,7 +206,7 @@ def compute_metrics(simplified='none'):
             dir =  os.path.join('results', 'baselines', 'simplified', dataset)
         elif simplified == 'post':
             dir_sum = os.path.join('access', 'access', 'preds', dataset)
-            dir_ref = os.path.join('results', 'baselines', 'simplified', dataset)
+            dir_ref = os.path.join('results', 'baselines', dataset)
         else:
             dir = os.path.join('results', 'baselines', dataset)
 
@@ -243,7 +243,7 @@ def compute_metrics(simplified='none'):
 
 def main():
     # run_baselines(simplified='none')
-    compute_metrics(simplified='none')
+    compute_metrics(simplified='post')
 
 
 if __name__ == "__main__":

@@ -42,8 +42,8 @@ if __name__ == '__main__':
     #print(evaluate_simplifier_on_law('tosdr', simplifier, phase='test'))
     print("small billsum (test)")
     print(evaluate_simplifier_on_law('small_billsum', simplifier, phase='test'))
-    print('test tldr')
-    print(evaluate_simplifier_on_law('tldr', simplifier, phase='test'))
+
+
     """
     summary_models =['bart', 'kl_sum', 'lead_k', 'lead_one', 'random_k', 'text_rank']
     datasets = ['small_billsum']

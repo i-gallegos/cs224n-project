@@ -48,13 +48,13 @@ def read_csv(csv_file, dataset, phase):
     # create files with data from csv
     with open(f'original_{dataset}_{phase}.txt', "w") as orig_file:
         for row in df['document']:
-            row = row.replace("\n", "")
-            orig_file.write("".join(row)+'\n')
+            #row = row.replace("\n", "")
+            orig_file.write("".join(row[:(len(row)//2)])+'\n')
         orig_file.close()
 
     with open(f'reference_{dataset}_{phase}.txt', "w") as ref_file:
         for row in df['summary']:
-            row = row.replace("\n", "")
+            #row = row.replace("\n", "")
             ref_file.write("".join(row)+'\n')
         ref_file.close()
     return f'original_{dataset}_{phase}.txt', f'reference_{dataset}_{phase}.txt'
@@ -62,11 +62,11 @@ def read_csv(csv_file, dataset, phase):
 # be in cs224n-project/access
 def get_law_filepath(dataset, phase):
     cur_path = os.getcwd() 
-    #dataset_path = f'{cur_path}/../data/{dataset}'
-    #filename = f'{dataset_path}/{dataset}_{phase}.csv'
-    #return read_csv(filename, dataset, phase)
+    dataset_path = f'{cur_path}/../data/{dataset}'
+    filename = f'{dataset_path}/{dataset}_{phase}.csv'
+    return read_csv(filename, dataset, phase)
     #print(cur_path)
-    return f'{cur_path}/original_{dataset}_{phase}.txt', f'{cur_path}/reference_{dataset}_{phase}.txt'
+    #return f'{cur_path}/original_{dataset}_{phase}.txt', f'{cur_path}/reference_{dataset}_{phase}.txt'
 
 
 def get_pred_filepath(dataset, phase):

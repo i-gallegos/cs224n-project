@@ -8,7 +8,7 @@ utils.logging.set_verbosity_error()  # Remove line to see warnings
 full_checkpoints = ['tldr_lr3e-05_seed161_full_datasetTrue/checkpoint-4', "tosdr_lr3e-05_seed161_full_datasetTrue/checkpoint-8", "small_billsum_lr3e-05_seed224_full_datasetTrue/checkpoint-52"]
 within_checkpoints = ['tldr_lr3e-05_seed161_full_datasetFalse/checkpoint-4', 'tosdr_lr3e-05_seed161_full_datasetFalse/checkpoint-8', 'small_billsum_lr3e-05_seed161_full_datasetFalse/checkpoint-44']
 checkpoint = full_checkpoints[0]
-model_name = f"facebook/bart-large-cnn/{checkpoint}/"
+model_name = f"facebook/bart-large-cnn"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModel.from_pretrained(model_name, output_attentions=True)
 

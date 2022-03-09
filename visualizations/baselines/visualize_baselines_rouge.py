@@ -13,6 +13,8 @@ else:
 
 def plot_bar_graph(df, ax, title):
     df = df.pivot_table(index=['baseline'], columns=['dataset'])
+    df.columns = df.columns.droplevel()
+    df = df[['tldr', 'tosdr', 'small_billsum']]
     df.plot.bar(rot=0, ax=ax, legend=False, xlabel='')
     ax.set_title(title)
     ax.set_ylim([0,1])

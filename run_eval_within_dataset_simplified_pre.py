@@ -23,7 +23,7 @@ os.system(f"python evaluate_bart.py bart-large-cnn-finetuned/{checkpoint}/ \
 
 dataset = 'small_billsum'
 name = 'small_billsum_test'
-checkpoint = 'small_billsum_lr3e-05_seed224_full_datasetFalse/checkpoint-120'
+checkpoint = 'small_billsum_lr3e-05_seed161_full_datasetFalse/checkpoint-44'
 os.system(f"python evaluate_bart.py bart-large-cnn-finetuned/{checkpoint}/ \
             --test_file data/{dataset}/{dataset}_test_simplified.csv \
             --out_file results/{experiment}/preds_{name}.txt \

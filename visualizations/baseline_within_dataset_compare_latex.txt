@@ -1,0 +1,12 @@
+\begin{tabular}{llllllllll}
+ & \multicolumn{3}{c}{R-1} & \multicolumn{3}{c}{R-2} & \multicolumn{3}{c}{R-L} \\
+dataset & TLDR & TOSDR & Billsum & TLDR & TOSDR & Billsum & TLDR & TOSDR & Billsum \\
+method &  &  &  &  &  &  &  &  &  \\
+TextRank & 17.98 & \textbf{7.83} & 34.47 & 1.28 & 2.59 & 15.39 & 16.25 & \textbf{7.7} & 29.09 \\
+KLSum & 18.05 & 20.24 & 24.21 & 3.1 & 5.17 & 10.42 & 17.69 & 18.76 & 21.31 \\
+Lead-1 & \textbf{25.66} & 24.74 & 1.88 & \textbf{6.98} & 7.32 & 0.02 & \textbf{24.19} & 23.14 & 1.85 \\
+Lead-K & 21.14 & 25.38 & 32.52 & 3.39 & \textbf{7.58} & 15.64 & 19.68 & 23.78 & 30.26 \\
+Random-K & 12.36 & 19.6 & 28.3 & 1.28 & 4.94 & 11.04 & 11.77 & 18.32 & 25.15 \\
+bart-large-cnn & 17.57 & 18.65 & 23.51 & 2.75 & 3.59 & \textbf{9.79} & 15.83 & 17.55 & 22.36 \\
+Fine-Tuned bart-large-cnn & 15.52 & 18.08 & \textbf{43.44} & 1.93 & 3.21 & 25.48 & 14.13 & 17.62 & \textbf{39.92} \\
+\end{tabular}

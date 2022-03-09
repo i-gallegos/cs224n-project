@@ -67,7 +67,7 @@ def kl_sum(text, avg_summary_len):
             summary = new_summary
 
     if len(summary) == 0:
-        summary += 'none'
+        summary = 'none'
     return (' ').join([str(sentence) for sentence in summary])
 
 
@@ -242,8 +242,8 @@ def compute_metrics(simplified='none'):
     df.to_csv(save_path, index=False)
 
 def main():
-    # run_baselines(simplified='none')
-    compute_metrics(simplified='post')
+    run_baselines(simplified='pre')
+    compute_metrics(simplified='pre')
 
 
 if __name__ == "__main__":

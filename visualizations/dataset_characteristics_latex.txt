@@ -1,9 +1,10 @@
 \begin{tabular}{llll}
 \toprule
-      Dataset & Total Examples & Mean Document Length (Std) & Mean Summary Length (Std) \\
+      Dataset &      Total Examples & Mean Document Length (Std) & Mean Summary Length (Std) \\
 \midrule
-         tldr &             85 &            127.24 (134.26) &              11.56 (8.00) \\
-        tosdr &            361 &              40.90 (48.64) &               9.41 (5.67) \\
-small\_billsum &           2018 &           1135.95 (453.45) &            140.55 (95.74) \\
+         tldr &       59/13/13 (85) &            127.24 (134.26) &              11.56 (8.00) \\
+        tosdr &     252/54/55 (361) &              40.90 (48.64) &               9.41 (5.67) \\
+small\_billsum & 1412/303/303 (2018) &           1135.95 (453.45) &            140.55 (95.74) \\
+ tiny\_billsum &     59/13/303 (377) &           1147.12 (468.15) &            143.45 (94.92) \\
 \bottomrule
 \end{tabular}

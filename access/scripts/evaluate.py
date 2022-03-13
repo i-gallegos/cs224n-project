@@ -38,8 +38,12 @@ if __name__ == '__main__':
     #print(evaluate_simplifier_on_turkcorpus(simplifier, phase='test'))
     #print("tldr (test)")
     #print(evaluate_simplifier_on_law('tldr', simplifier, phase='test'))
-    print("tosdr (test)")
+    print("tldr (non-simp test)")
+    print(evaluate_simplifier_on_law('tldr', simplifier, phase='test'))
+    print("tosdr (non-simp test)")
     print(evaluate_simplifier_on_law('tosdr', simplifier, phase='test'))
+    print("sm (non-simp test)")
+    print(evaluate_simplifier_on_law('small_billsum', simplifier, phase='test'))
     #print("small billsum (test)")
     #print(evaluate_simplifier_on_law('small_billsum', simplifier, phase='test'))
 
